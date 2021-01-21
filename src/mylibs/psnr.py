@@ -67,6 +67,7 @@ def sobel_filter(img, scale_fact=1.):
     return { 'grads' : torch.from_numpy(grads), 'grads_x' : torch.from_numpy(grads_x), 'grads_y' : torch.from_numpy(grads_y) }
 
 def _init_grads_psnr(in_grads):
+    in_grads = in_grads.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     # why 2. and 4.?
     # input [-1., +1.]
     # gradient matrix [-2., +2.]
@@ -100,6 +101,7 @@ def laplace_filter(img, scale_fact=1.):
     return { 'laplace' : img_laplace }
 
 def _init_grads_psnr(in_laplace):
+    in_laplace = in_laplace.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     # why 1. and 5.?
     # input: [-1., +1.]
     # laplacian matrix [-1., +4]
