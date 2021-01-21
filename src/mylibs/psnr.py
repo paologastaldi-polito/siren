@@ -58,8 +58,9 @@ def plot_image(img, gt, sidelength=256):
 
 # --- GRADIENTS ---
 
-def sobel_filter(img):
+def sobel_filter(img, scale_fact=1.):
     '''Generate gradients with the sobel operator'''
+    img *= scale_fact
     grads_x = scipy.ndimage.sobel(img.numpy(), axis=1).squeeze(0)[..., None]
     grads_y = scipy.ndimage.sobel(img.numpy(), axis=2).squeeze(0)[..., None]
     grads = np.sqrt(np.power(grads_x, 2) + np.power(grads_y, 2))    
@@ -91,8 +92,9 @@ def plot_grads(img_grads, gt_grads, sidelength=256):
 
 # --- LAPLACIAN ---
 
-def laplace_filter(img):
+def laplace_filter(img, scale_fact=1.):
     '''Get laplacian with ND laplacian operator'''
+    img *= scale_fact
     img_laplace = scipy.ndimage.laplace(img.numpy()).squeeze(0)[..., None]
     img_laplace = torch.from_numpy(img_laplace).view(-1, 1)
     return { 'laplace' : img_laplace }
