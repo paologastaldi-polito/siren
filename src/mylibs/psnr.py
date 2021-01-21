@@ -31,6 +31,7 @@ def monocromatic_image(color=255, sidelength=256):
     return img
 
 def blur_image(img):
+    '''Hard blur an image (with presets)'''
     return GaussianBlur(99., (0.1, 99.))(img)
 
 def _init_image_psnr(in_img):
@@ -69,8 +70,8 @@ def sobel_filter(img, scale_fact=1.):
 def _init_grads_psnr(in_grads):
     in_grads = in_grads.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     # why 2. and 4.?
-    # input [-1., +1.]
-    # gradient matrix [-2., +2.]
+    # original image tensor: [-1., +1.]
+    # gradient matrix: [-2., +2.]
     out_grads = (in_grads +2.) / 4. # move [-2., 2.] in [0., 1.]
     out_grads = np.clip(out_grads, a_min=0., a_max=1.)
     return out_grads
@@ -100,11 +101,11 @@ def laplace_filter(img, scale_fact=1.):
     img_laplace = torch.from_numpy(img_laplace).view(-1, 1)
     return { 'laplace' : img_laplace }
 
-def _init_grads_psnr(in_laplace):
+def _init_laplace_psnr(in_laplace):
     in_laplace = in_laplace.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     # why 1. and 5.?
-    # input: [-1., +1.]
-    # laplacian matrix [-1., +4]
+    # original image tensor: [-1., +1.]
+    # laplacian matrix: [-1., +4]
     out_laplace = (in_laplace + 1.) / 5. # move [-1., +4.] in [0., 1.]
     out_laplace = np.clip(out_laplace, a_min=0., a_max=1.)
     return out_laplace
@@ -115,8 +116,8 @@ def laplace_psnr(img_laplace, gt_laplace):
         img_laplace = img_laplace['laplace']
     if type(gt_laplace) is dict:
         gt_laplace = gt_laplace['laplace']
-    img_laplace = _init_grads_psnr(img_laplace)
-    gt_laplace = _init_grads_psnr(gt_laplace)
+    img_laplace = _init_laplace_psnr(img_laplace)
+    gt_laplace = _init_laplace_psnr(gt_laplace)
     return _psnr(img_laplace, gt_laplace)
 
 def plot_laplace(img_laplace, gt_laplace, sidelength=256):
