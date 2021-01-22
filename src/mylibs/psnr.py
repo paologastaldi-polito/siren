@@ -6,19 +6,46 @@ import torchvision
 from torchvision import transforms
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Grayscale, ToPILImage, GaussianBlur
 import matplotlib.pyplot as plt
+import skimage
 
 def _psnr(pred, gt, max_pixel=1.):
-    '''PSNR formula'''
-    mse = ((pred - gt)**2).mean().item()
-    rmse = math.sqrt(mse)
-    psnr = -999.
-    if mse != 0.:
-        psnr = 20 * math.log10(max_pixel/rmse)
+    '''peak signal to noise ratio formula'''
+    # mse = ((pred - gt)**2).mean().item()
+    # # mse = skimage.metrics.mean_squared_error(pred, gt)
+    # rmse = math.sqrt(mse)
+    # psnr = -999.
+    # if mse != 0.:
+    #     psnr = 20 * math.log10(max_pixel/rmse)
+    psnr = skimage.metrics.peak_signal_noise_ratio(gt, pred, data_range=gt.max() - gt.min())
     return psnr
+
+def _ssim(pred, gt):
+    '''structural similarity formula'''
+    ssim_noise = skimage.metrics.structural_similarity(gt, pred, data_range=gt.max() - gt.min())
+    return ssim_noise
+
+def caption(pred, gt=None, type=None):
+    '''Generate a caption automatically'''
+    label = 'PSNR: {:.2f}, SSIM: {:.2f}'
+    if gt is not None:
+        psnr = -999.
+        ssim = -999.
+        if type == 'img':
+            psnr = img_psnr(pred, gt)
+        elif type == 'grads':
+            psnr = grads_psnr(pred, gt)
+        elif type == 'laplace':
+            psnr = laplace_psnr(pred, gt)
+        ssim = _ssim(pred, gt)
+        label.format(psnr, ssim)
+    else:
+        label = None
+    return label
 
 # --- IMAGE ---
 
-def monocromatic_image(color=255, sidelength=256):
+def monocromatic_img(color=255, sidelength=256):
+    '''Generate a squared monocromatic image'''
     img = np.zeros([sidelength,sidelength,1],dtype=np.uint8)
     img[:] = color
     transform = Compose([
@@ -30,31 +57,36 @@ def monocromatic_image(color=255, sidelength=256):
     img = transform(img)
     return img
 
-def blur_image(img):
+def blur_img(img):
     '''Hard blur an image (with presets)'''
     return GaussianBlur(99., (0.1, 99.))(img)
 
-def _init_image_psnr(in_img):
+def _init_img_psnr(in_img):
     in_img = in_img.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     out_img = in_img.transpose(1, 2, 0)
     out_img = (out_img / 2.) + 0.5 # move [-1, 1] in [0, 1]
     out_img = np.clip(out_img, a_min=0., a_max=1.)
     return out_img
 
-def image_psnr(img, gt):
+def img_psnr(img, gt):
     '''Compute PSNR over image'''
     if type(img) is dict:
         img = img['pixels']
     if type(gt) is dict:
         gt = gt['pixels']
-    img = _init_image_psnr(img)
-    gt = _init_image_psnr(gt)
+    img = _init_img_psnr(img)
+    gt = _init_img_psnr(gt)
     return _psnr(img, gt)
 
-def plot_image(img, gt, sidelength=256):
-    _, axes = plt.subplots(1,2, figsize=(18,6))
+def plot_img(img, gt=None, sidelength=256, img_caption=caption(img, gt, 'img')):
+    n_images = 1
+    if gt is not None:
+        n_images += 1
+    _, axes = plt.subplots(1,n_images, figsize=(18,6))
     axes[0].imshow(img.cpu().view(sidelength,sidelength).detach().numpy())
-    axes[1].imshow(gt.cpu().view(sidelength,sidelength).detach().numpy())
+    axes[0].set_xlabel(img_caption)
+    if gt is not None:
+        axes[1].imshow(gt.cpu().view(sidelength,sidelength).detach().numpy())
     plt.show()
 
 # --- GRADIENTS ---
@@ -86,10 +118,15 @@ def grads_psnr(img_grads, gt_grads):
     gt_grads = _init_grads_psnr(gt_grads)
     return _psnr(img_grads, gt_grads)
 
-def plot_grads(img_grads, gt_grads, sidelength=256):
-    _, axes = plt.subplots(1,2, figsize=(18,6))
+def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=img_caption=caption(img_grads, gt_grads, 'grads')):
+    n_images = 1
+    if gt_grads is not None:
+        n_images += 1
+    _, axes = plt.subplots(1,n_images, figsize=(18,6))
     axes[0].imshow(img_grads.cpu().norm(dim=-1).view(sidelength,sidelength).detach().numpy())
-    axes[1].imshow(gt_grads.cpu().norm(dim=-1).view(sidelength,sidelength).detach().numpy())
+    axes[0].set_xlabel(img_caption)
+    if gt_grads is not None:
+        axes[1].imshow(gt_grads.cpu().norm(dim=-1).view(sidelength,sidelength).detach().numpy())
     plt.show()
 
 # --- LAPLACIAN ---
@@ -120,8 +157,13 @@ def laplace_psnr(img_laplace, gt_laplace):
     gt_laplace = _init_laplace_psnr(gt_laplace)
     return _psnr(img_laplace, gt_laplace)
 
-def plot_laplace(img_laplace, gt_laplace, sidelength=256):
-    _, axes = plt.subplots(1,2, figsize=(18,6))
+def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=caption(img_laplace, gt_laplace, 'laplace')):
+    n_images = 1
+    if gt_laplace is not None:
+        n_images += 1
+    _, axes = plt.subplots(1,n_images, figsize=(18,6))
     axes[0].imshow(img_laplace.cpu().view(sidelength,sidelength).detach().numpy())
-    axes[1].imshow(gt_laplace.cpu().view(sidelength,sidelength).detach().numpy())
+    axes[0].set_xlabel(img_caption)
+    if gt_laplace is not None:
+        axes[1].imshow(gt_laplace.cpu().view(sidelength,sidelength).detach().numpy())
     plt.show()
