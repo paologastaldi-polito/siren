@@ -64,7 +64,9 @@ def blur_img(img):
 def _init_img_psnr(in_img):
     in_img = in_img.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     out_img = in_img.transpose(1, 2, 0)
-    out_img = (out_img / 2.) + 0.5 # move [-1, 1] in [0, 1]
+    # why 1. and 2.?
+    # original image tensor: [-1., +1.]
+    out_img = (out_img + 1.) / 2. # move [-1, 1] in [0, 1]
     out_img = np.clip(out_img, a_min=0., a_max=1.)
     return out_img
 
@@ -101,10 +103,10 @@ def sobel_filter(img, scale_fact=1.):
 
 def _init_grads_psnr(in_grads):
     in_grads = in_grads.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
-    # why 2. and 4.?
+    # why 4.+math.sqrt(2.) and 4.?
     # original image tensor: [-1., +1.]
-    # gradient matrix: [-2., +2.]
-    out_grads = (in_grads +2.) / 4. # move [-2., 2.] in [0., 1.]
+    # gradient matrix: [-4.-math.sqrt(2.), +4.+math.sqrt(2.)]
+    out_grads = (in_grads +4.+math.sqrt(2.)) / ((4.+math.sqrt(2.))*2.)
     out_grads = np.clip(out_grads, a_min=0., a_max=1.)
     return out_grads
 
@@ -140,10 +142,10 @@ def laplace_filter(img, scale_fact=1.):
 
 def _init_laplace_psnr(in_laplace):
     in_laplace = in_laplace.detach().cpu().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
-    # why 1. and 5.?
+    # why 6. and 12.?
     # original image tensor: [-1., +1.]
-    # laplacian matrix: [-1., +4]
-    out_laplace = (in_laplace + 1.) / 5. # move [-1., +4.] in [0., 1.]
+    # laplacian matrix: [-6., +6]
+    out_laplace = (in_laplace + 6.) / 12.
     out_laplace = np.clip(out_laplace, a_min=0., a_max=1.)
     return out_laplace
 
