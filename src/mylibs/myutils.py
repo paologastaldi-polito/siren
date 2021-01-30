@@ -108,23 +108,28 @@ def caption(pred, gt=None, type=None, sidelength=256, silent=True):
         label = None
     return label
 
-def plot_all(img, gt, sidelength=256, img_caption=None, silent=True):
+def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False, fname='figure'):
     '''Plot image, gradients and laplacian all at the same time (only for the generated image)'''
     n_images = 3
-    _, axes = plt.subplots(1, n_images, figsize=(18,6))
+    fig, axes = plt.subplots(1, n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = {
             'img' : caption(img['img'], gt['img'], 'img', sidelength=sidelength, silent=silent),
             'grads' : caption(img['grads'], gt['grads'], 'grads', sidelength=sidelength, silent=silent),
             'laplace' : caption(img['laplace'], gt['laplace'], 'laplace', sidelength=sidelength, silent=silent)
         }
-    
+    if save:
+        color='k'
+    else:
+        color='w'
     axes[0].imshow(img['img'].cpu().view(sidelength, sidelength).detach().numpy())
-    axes[0].set_xlabel(img_caption['img'], color='w')
+    axes[0].set_xlabel(img_caption['img'], color=color)
     axes[1].imshow(img['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
-    axes[1].set_xlabel(img_caption['grads'], color='w')
+    axes[1].set_xlabel(img_caption['grads'], color=color)
     axes[2].imshow(img['laplace'].cpu().view(sidelength, sidelength).detach().numpy())
-    axes[2].set_xlabel(img_caption['laplace'], color='w')
+    axes[2].set_xlabel(img_caption['laplace'], color=color)
+    if save:
+        plt.savefig(fname=fname, format='png')
     plt.show()
 
 # --- IMAGE ---
