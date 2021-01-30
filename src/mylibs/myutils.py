@@ -108,7 +108,7 @@ def caption(pred, gt=None, type=None, sidelength=256, silent=True):
         label = None
     return label
 
-def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False, fname='figure'):
+def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
     '''Plot image, gradients and laplacian all at the same time (only for the generated image)'''
     n_images = 3
     fig, axes = plt.subplots(1, n_images, figsize=(18,6))
@@ -176,17 +176,23 @@ def img_psnr(img, gt, silent=True):
     gt = _init_img_psnr(gt, silent=silent)
     return _psnr(img, gt)
 
-def plot_img(img, gt=None, sidelength=256, img_caption=None):
+def plot_img(img, gt=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
     n_images = 1
     # if gt is not None:
     #     n_images += 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
-        img_caption = caption(img, gt, 'img')
+        img_caption = caption(img, gt, 'img', sidelength=sidelength, silent=silent)
+    if save:
+        color='k'
+    else:
+        color='w'
     axes.imshow(img.cpu().view(sidelength, sidelength).detach().numpy())
-    axes.set_xlabel(img_caption, color='w')
+    axes.set_xlabel(img_caption, color=color)
     # if gt is not None:
     #     axes[1].imshow(gt.cpu().view(sidelength, sidelength).detach().numpy())
+    if save:
+        plt.savefig(fname=fname, format='png')
     plt.show()
 
 # --- GRADIENTS ---
@@ -244,17 +250,23 @@ def grads_psnr(img_grads, gt_grads, silent=True):
     gt_grads = _init_grads_psnr(gt_grads, silent=silent)
     return _psnr(img_grads, gt_grads)
 
-def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=None):
+def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
     n_images = 1
     # if gt_grads is not None:
     #     n_images += 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
-        img_caption = caption(img_grads, gt_grads, 'grads')
-    axes[0].imshow(img_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
-    axes[0].set_xlabel(img_caption, color='w')
+        img_caption = caption(img_grads, gt_grads, 'grads', sidelength=sidelength, silent=silent)
+    if save:
+        color='k'
+    else:
+        color='w'
+    axes.imshow(img_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
+    axes.set_xlabel(img_caption, color=color)
     # if gt_grads is not None:
     #     axes[1].imshow(gt_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
+    if save:
+        plt.savefig(fname=fname, format='png')
     plt.show()
 
 # --- LAPLACIAN ---
@@ -296,17 +308,23 @@ def laplace_psnr(img_laplace, gt_laplace, silent=True):
     gt_laplace = _init_laplace_psnr(gt_laplace, silent=silent)
     return _psnr(img_laplace, gt_laplace)
 
-def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None):
+def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
     n_images = 1
     # if gt_laplace is not None:
     #     n_images += 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
-        img_caption = caption(img_laplace, gt_laplace, 'laplace')
-    axes[0].imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
-    axes[0].set_xlabel(img_caption, color='w')
+        img_caption = caption(img_laplace, gt_laplace, 'laplace', sidelength=sidelength, silent=silent)
+    if save:
+        color='k'
+    else:
+        color='w'
+    axes.imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
+    axes.set_xlabel(img_caption, color=color)
     # if gt_laplace is not None:
     #     axes[1].imshow(gt_laplace.cpu().view(sidelength, sidelength).detach().numpy())
+    if save:
+        plt.savefig(fname=fname, format='png')
     plt.show()
 
 def image_mse(model_output, coords, gt_image):
@@ -333,11 +351,13 @@ def psnr(pred, gt, sidelength=256, silent=True):
     gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
     return _psnr(pred, gt)
 
-def plot_psnrs(psnrs, total_steps, title, color='w'):
+def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.png'):
     '''psnrs: dict
     total_steps: int
     title: str
     color: matplotlib color type'''
+    if save:
+        color='k'
     x = [i for i in range(total_steps+1)]
     plt.figure(figsize=(12, 6))
     plt.title(title, color=color, fontsize=16)
@@ -353,3 +373,6 @@ def plot_psnrs(psnrs, total_steps, title, color='w'):
         else:
             plt.plot(x, y, label=s)
     plt.legend(loc='upper left')
+    if save:
+        plt.savefig(fname=fname, format='png')
+    plt.show()
