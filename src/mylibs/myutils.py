@@ -125,9 +125,9 @@ def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False,
     axes[0].imshow(img['img'].cpu().view(sidelength, sidelength).detach().numpy())
     axes[0].set_xlabel(img_caption['img'], color=color)
     axes[1].imshow(img['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
-    axes[1].set_xlabel(img_caption['grads'], color=color)
+    # axes[1].set_xlabel(img_caption['grads'], color=color)
     axes[2].imshow(img['laplace'].cpu().view(sidelength, sidelength).detach().numpy())
-    axes[2].set_xlabel(img_caption['laplace'], color=color)
+    # axes[2].set_xlabel(img_caption['laplace'], color=color)
     if save:
         plt.savefig(fname=fname, format='png')
     plt.show()
@@ -262,7 +262,7 @@ def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=None, silen
     else:
         color='w'
     axes.imshow(img_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
-    axes.set_xlabel(img_caption, color=color)
+    # axes.set_xlabel(img_caption, color=color)
     # if gt_grads is not None:
     #     axes[1].imshow(gt_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
     if save:
@@ -320,7 +320,7 @@ def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None,
     else:
         color='w'
     axes.imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
-    axes.set_xlabel(img_caption, color=color)
+    # axes.set_xlabel(img_caption, color=color)
     # if gt_laplace is not None:
     #     axes[1].imshow(gt_laplace.cpu().view(sidelength, sidelength).detach().numpy())
     if save:
