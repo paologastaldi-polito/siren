@@ -265,14 +265,6 @@ def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None)
     _, axes = plt.subplots(1, n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = caption(img_laplace, gt_laplace, 'laplace')
-<<<<<<< HEAD
     axes.imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
     axes.set_xlabel(img_caption, color='w')
     plt.show()
-=======
-    axes[0].imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
-    axes[0].set_xlabel(img_caption, color='w')
-    # if gt_laplace is not None:
-    #     axes[1].imshow(gt_laplace.cpu().view(sidelength, sidelength).detach().numpy())
-    plt.show()
->>>>>>> c9cb20c8db4fc9e2ceb1f9435135e7b7c547414c

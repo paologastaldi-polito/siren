@@ -6,6 +6,7 @@ import torchvision
 from torchvision import transforms
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Grayscale, ToPILImage # , GaussianBlur
 import matplotlib.pyplot as plt
+import skimage
 from skimage import metrics
 
 def gradient(y, x, grad_outputs=None):
@@ -41,35 +42,35 @@ def laplace(y, x):
 
 def _psnr(pred, gt, max_pixel=1.):
     '''peak signal to noise ratio formula'''
-    mse = metrics.mean_squared_error(pred, gt)
+    mse = skimage.metrics.mean_squared_error(pred, gt)
     # mse = ((pred - gt)**2).mean().item()
     # rmse = math.sqrt(mse)
     psnr = float('inf')
     if mse != 0.:
     #     psnr = 20 * math.log10(max_pixel/rmse)
-        # psnr = metrics.peak_signal_noise_ratio(gt, pred, data_range=gt.max() - gt.min())
-        psnr = metrics.peak_signal_noise_ratio(gt, pred, data_range=max_pixel)
+        # psnr = skimage.metrics.peak_signal_noise_ratio(gt, pred, data_range=gt.max() - gt.min())
+        psnr = skimage.metrics.peak_signal_noise_ratio(gt, pred, data_range=max_pixel)
     return psnr
 
 def _ssim(pred, gt,  max_pixel=1.):
     '''structural similarity formula'''
-    # ssim_noise = metrics.structural_similarity(gt, pred, data_range=gt.max() - gt.min())
-    ssim_noise = metrics.structural_similarity(gt, pred, data_range=max_pixel)
+    # ssim_noise = skimage.metrics.structural_similarity(gt, pred, data_range=gt.max() - gt.min())
+    ssim_noise = skimage.metrics.structural_similarity(gt, pred, data_range=max_pixel)
     return ssim_noise
 
-def caption(pred, gt=None, type=None, sidelength=256, silent=True):
+def caption(pred, gt=None, type=None, sidelength=256):
     '''Generate a caption automatically'''
     label = 'PSNR: {:.2f}, SSIM: {:.2f}'
     if gt is not None:
         psnr = -999.
         ssim = -999.
         if type == 'img':
-            pred = torch.from_numpy(_init_img_psnr(pred, silent=silent))
+            pred = torch.from_numpy(_init_img_psnr(pred))
             pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
-            gt = torch.from_numpy(_init_img_psnr(gt, silent=silent))
+            gt = torch.from_numpy(_init_img_psnr(gt))
             gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
         elif type == 'grads':
-            pred = torch.from_numpy(_init_grads_psnr(pred, silent=silent))
+            pred = torch.from_numpy(_init_grads_psnr(pred))
             pred_x = pred[..., 0]
             pred_y = pred[..., 1]
             pred = torch.sqrt(pred_x**2 + pred_y**2)
@@ -77,7 +78,7 @@ def caption(pred, gt=None, type=None, sidelength=256, silent=True):
             # pred = pred.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
             # pred_x = pred_x.cpu().view(sidelength, sidelength).detach().numpy()
             # pred_y = pred_y.cpu().view(sidelength, sidelength).detach().numpy()
-            gt = torch.from_numpy(_init_grads_psnr(gt, silent=silent))
+            gt = torch.from_numpy(_init_grads_psnr(gt))
             gt_x = gt[..., 0]
             gt_y = gt[..., 1]
             gt = torch.sqrt(gt_x**2 + gt_y**2)
@@ -86,23 +87,12 @@ def caption(pred, gt=None, type=None, sidelength=256, silent=True):
             # gt_x = gt_x.cpu().view(sidelength, sidelength).detach().numpy()
             # gt_y = gt_y.cpu().view(sidelength, sidelength).detach().numpy()
         elif type == 'laplace':
-            pred = torch.from_numpy(_init_laplace_psnr(pred, silent=silent))
+            pred = torch.from_numpy(_init_laplace_psnr(pred))
             pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
-            gt = torch.from_numpy(_init_laplace_psnr(gt, silent=silent))
+            gt = torch.from_numpy(_init_laplace_psnr(gt))
             gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
         psnr = _psnr(pred, gt)
         ssim = _ssim(pred, gt)
-        # if type == 'grads':
-        #     label = 'PSNR:  {:.2f}, PSNR x: {:.2f}, PSNR y: {:.2f}, PSNR avg: {:.2f}\nSSIM: {:.2f}, SSIM x: {:.2f}, SSIM y: {:.2f}, SSIM avg: {:.2f}'
-        #     psnr_x = _psnr(pred_x, gt_x)
-        #     psnr_y = _psnr(pred_y, gt_y)
-        #     psnr_avg = (psnr_x + psnr_y) / 2.
-        #     ssim_x = _ssim(pred_x, gt_x)
-        #     ssim_y = _ssim(pred_y, gt_y)
-        #     ssim_avg = (ssim_x + ssim_y) / 2.
-        #     label = label.format(psnr, psnr_x, psnr_y, psnr_avg, ssim, ssim_x, ssim_y, ssim_avg)
-        # else:
-        #     label = label.format(psnr, ssim)
         label = label.format(psnr, ssim)
     else:
         label = None
@@ -125,9 +115,9 @@ def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False,
     axes[0].imshow(img['img'].cpu().view(sidelength, sidelength).detach().numpy())
     axes[0].set_xlabel(img_caption['img'], color=color)
     axes[1].imshow(img['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
-    # axes[1].set_xlabel(img_caption['grads'], color=color)
+    axes[1].set_xlabel(img_caption['grads'], col or=color)
     axes[2].imshow(img['laplace'].cpu().view(sidelength, sidelength).detach().numpy())
-    # axes[2].set_xlabel(img_caption['laplace'], color=color)
+    axes[2].set_xlabel(img_caption['laplace'], color=color)
     if save:
         plt.savefig(fname=fname, format='png')
     plt.show()
@@ -177,9 +167,12 @@ def img_psnr(img, gt, silent=True):
     return _psnr(img, gt)
 
 def plot_img(img, gt=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
+    img = torch.from_numpy(_init_img_psnr(img))
+    img = img.cpu().view(sidelength, sidelength).detach().numpy()
+    gt = torch.from_numpy(_init_img_psnr(gt))
+    gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
+
     n_images = 1
-    # if gt is not None:
-    #     n_images += 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = caption(img, gt, 'img', sidelength=sidelength, silent=silent)
@@ -189,8 +182,6 @@ def plot_img(img, gt=None, sidelength=256, img_caption=None, silent=True, save=F
         color='w'
     axes.imshow(img.cpu().view(sidelength, sidelength).detach().numpy())
     axes.set_xlabel(img_caption, color=color)
-    # if gt is not None:
-    #     axes[1].imshow(gt.cpu().view(sidelength, sidelength).detach().numpy())
     if save:
         plt.savefig(fname=fname, format='png')
     plt.show()
@@ -221,16 +212,11 @@ def _init_grads_psnr(in_grads, sidelength=256, silent=True):
         out_grads = in_grads.cpu().detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     else:
         out_grads = in_grads
-    # why +8. and 16.?
+    # why 16. and 32.?
     # original image tensor: [-1., +1.]
-    # gradient matrix: [-8., +8.]
+    # gradient matrix: [-32., +32.]
     # output: [0., +1.]
-    # out_grads = (out_grads + 8.) / 16.
-    # out_grads = (out_grads * std) + 0.5
-    # out_grads = out_grads/ 16.
-    out_grads = out_grads / (math.sqrt(2.)*8.)
-    # out_grads = (out_grads + 1) / 2
-    # out_grads /= norm
+    out_grads = (out_grads + 16.) / 32.
     if not silent and (np.min(out_grads) < 0. or np.max(out_grads) > 1.):
         print('WARNING: clipping the gradients tensor, min %.2f max %.2f' % (np.min(out_grads), np.max(out_grads)))
     out_grads = np.clip(out_grads, a_min=0., a_max=1.)
@@ -251,6 +237,23 @@ def grads_psnr(img_grads, gt_grads, silent=True):
     return _psnr(img_grads, gt_grads)
 
 def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
+    img_grads = torch.from_numpy(_init_grads_psnr(img_grads))
+    img_grads_x = img_grads[..., 0]
+    img_grads_y = img_grads[..., 1]
+    img_grads = torch.sqrt(img_grads_x**2 + img_grads_y**2)
+    img_grads = img_grads.cpu().view(sidelength, sidelength).detach().numpy()
+    # pred = pred.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
+    # pred_x = pred_x.cpu().view(sidelength, sidelength).detach().numpy()
+    # pred_y = pred_y.cpu().view(sidelength, sidelength).detach().numpy()
+    gt_grads = torch.from_numpy(_init_grads_psnr(gt_grads))
+    gt_grads_x = gt_grads[..., 0]
+    gt_grads_y = gt_grads[..., 1]
+    gt_grads = torch.sqrt(gt_grads_x**2 + gt_grads_y**2)
+    gt_grads = gt.cpu().view(sidelength, sidelength).detach().numpy()
+    # gt = gt.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
+    # gt_x = gt_x.cpu().view(sidelength, sidelength).detach().numpy()
+    # gt_y = gt_y.cpu().view(sidelength, sidelength).detach().numpy()
+
     n_images = 1
     # if gt_grads is not None:
     #     n_images += 1
@@ -287,12 +290,7 @@ def _init_laplace_psnr(in_laplace, sidelength=256, silent=True):
     # why 8. and 16.?
     # original image tensor: [-1., +1.]
     # laplacian matrix: [-8., +8]
-    out_laplace = out_laplace / 16.
-    out_laplace = (out_laplace + 1.) / 2.
-    # norm = math.sqrt(32) * 1. # normalize in [0., +1.]
-    # out_laplace = (out_laplace + 0.5) / std
-    # out_laplace = (out_laplace * std) + 0.5
-    # out_laplace /= norm
+    out_laplace = (out_laplace + 8.) / 16.
     if not silent and (np.min(out_laplace) < 0. or np.max(out_laplace) > 1.):
         print('WARNING: clipping the laplacian tensor, min %.2f max %.2f' % (np.min(out_laplace), np.max(out_laplace)))
     out_laplace = np.clip(out_laplace, a_min=0., a_max=1.)
@@ -309,9 +307,12 @@ def laplace_psnr(img_laplace, gt_laplace, silent=True):
     return _psnr(img_laplace, gt_laplace)
 
 def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
+    img_laplace = torch.from_numpy(_init_laplace_psnr(img_laplace))
+    img_laplace = img_laplace.cpu().view(sidelength, sidelength).detach().numpy()
+    gt_laplace = torch.from_numpy(_init_laplace_psnr(gt_laplace))
+    gt_laplace = gt_laplace.cpu().view(sidelength, sidelength).detach().numpy()
+
     n_images = 1
-    # if gt_laplace is not None:
-    #     n_images += 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = caption(img_laplace, gt_laplace, 'laplace', sidelength=sidelength, silent=silent)
@@ -320,9 +321,6 @@ def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None,
     else:
         color='w'
     axes.imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
-    # axes.set_xlabel(img_caption, color=color)
-    # if gt_laplace is not None:
-    #     axes[1].imshow(gt_laplace.cpu().view(sidelength, sidelength).detach().numpy())
     if save:
         plt.savefig(fname=fname, format='png')
     plt.show()
