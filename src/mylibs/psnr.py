@@ -33,44 +33,34 @@ def caption(pred, gt=None, type=None, sidelength=256):
         psnr = -999.
         ssim = -999.
         if type == 'img':
-            # psnr = img_psnr(pred, gt)
             pred = torch.from_numpy(_init_img_psnr(pred))
             pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
             gt = torch.from_numpy(_init_img_psnr(gt))
             gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
         elif type == 'grads':
-            # psnr = grads_psnr(pred, gt)
             pred = torch.from_numpy(_init_grads_psnr(pred))
             pred_x = pred[..., 0]
             pred_y = pred[..., 1]
-            pred = pred.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
-            pred_x = pred_x.cpu().view(sidelength, sidelength).detach().numpy()
-            pred_y = pred_y.cpu().view(sidelength, sidelength).detach().numpy()
+            pred = torch.sqrt(pred_x**2 + pred_y**2)
+            pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
+            # pred = pred.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
+            # pred_x = pred_x.cpu().view(sidelength, sidelength).detach().numpy()
+            # pred_y = pred_y.cpu().view(sidelength, sidelength).detach().numpy()
             gt = torch.from_numpy(_init_grads_psnr(gt))
             gt_x = gt[..., 0]
             gt_y = gt[..., 1]
-            gt = gt.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
-            gt_x = gt_x.cpu().view(sidelength, sidelength).detach().numpy()
-            gt_y = gt_y.cpu().view(sidelength, sidelength).detach().numpy()
+            gt = torch.sqrt(gt_x**2 + gt_y**2)
+            gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
+            # gt = gt.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
+            # gt_x = gt_x.cpu().view(sidelength, sidelength).detach().numpy()
+            # gt_y = gt_y.cpu().view(sidelength, sidelength).detach().numpy()
         elif type == 'laplace':
-            # psnr = laplace_psnr(pred, gt)
             pred = torch.from_numpy(_init_laplace_psnr(pred))
             pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
             gt = torch.from_numpy(_init_laplace_psnr(gt))
             gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
         psnr = _psnr(pred, gt)
         ssim = _ssim(pred, gt)
-        # if type == 'grads':
-        #     label = 'PSNR:  {:.2f}, PSNR x: {:.2f}, PSNR y: {:.2f}, PSNR avg: {:.2f}\nSSIM: {:.2f}, SSIM x: {:.2f}, SSIM y: {:.2f}, SSIM avg: {:.2f}'
-        #     psnr_x = _psnr(pred_x, gt_x)
-        #     psnr_y = _psnr(pred_y, gt_y)
-        #     psnr_avg = (psnr_x + psnr_y) / 2.
-        #     ssim_x = _ssim(pred_x, gt_x)
-        #     ssim_y = _ssim(pred_y, gt_y)
-        #     ssim_avg = (ssim_x + ssim_y) / 2.
-        #     label = label.format(psnr, psnr_x, psnr_y, psnr_avg, ssim, ssim_x, ssim_y, ssim_avg)
-        # else:
-        #     label = label.format(psnr, ssim)
         label = label.format(psnr, ssim)
     else:
         label = None
@@ -83,9 +73,9 @@ def plot_all(img, gt, sidelength=256, img_caption=None):
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = {
-            'img' : caption(img['img'], gt['pixels'], 'img'),
-            'grads' : caption(img['grads'], gt['grads'], 'grads'),
-            'laplace' : caption(img['laplace'], gt['laplace'], 'laplace')
+            'img' : caption(img['img'], gt['pixels'], 'img', sidelength=sidelength),
+            'grads' : caption(img['grads'], gt['grads'], 'grads', sidelength=sidelength),
+            'laplace' : caption(img['laplace'], gt['laplace'], 'laplace', sidelength=sidelength)
         }
     
     axes[0].imshow(img['img'].cpu().view(sidelength, sidelength).detach().numpy())
@@ -122,12 +112,11 @@ def _init_img_psnr(in_img, sidelength=256):
         out_img = in_img
     out_img = out_img.transpose(1, 2, 0) # only for the image
     # why 1. and 2.?
-    # reverse of: image = '(image - mean) / std' is: 'image = (image * std) + mean'
     # original image tensor: [-1., +1.]
     # output: [0., +1.]
-    # out_img = (out_img + 1) / 2. # move [-1, 1] in [0, 1]
-    std = 0.5
-    out_img = (out_img * 0.5) + std
+    out_img = (out_img + 1.) / 2. # move [-1, 1] in [0, 1]
+    if (np.min(out_img) < 0. or np.max(out_img) > 1.) and VERBOSE:
+        print('WARNING: clipping the image tensor, min %.2f max %.2f' % (np.min(out_img), np.max(out_img)))
     out_img = np.clip(out_img, a_min=0., a_max=1.)
     return out_img
 
@@ -142,16 +131,17 @@ def img_psnr(img, gt):
     return _psnr(img, gt)
 
 def plot_img(img, gt=None, sidelength=256, img_caption=None):
+    img = torch.from_numpy(_init_img_psnr(img))
+    img = img.cpu().view(sidelength, sidelength).detach().numpy()
+    gt = torch.from_numpy(_init_img_psnr(gt))
+    gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
+
     n_images = 1
-    # if gt is not None:
-    #     n_images += 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = caption(img, gt, 'img')
     axes.imshow(img.cpu().view(sidelength, sidelength).detach().numpy())
     axes.set_xlabel(img_caption, color='w')
-    # if gt is not None:
-    #     axes[1].imshow(gt.cpu().view(sidelength, sidelength).detach().numpy())
     plt.show()
 
 # --- GRADIENTS ---
@@ -180,15 +170,13 @@ def _init_grads_psnr(in_grads, sidelength=256):
         out_grads = in_grads.cpu().detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     else:
         out_grads = in_grads
-    # why +8. and 16.?
+    # why 16. and 32.?
     # original image tensor: [-1., +1.]
-    # gradient matrix: [-8., +8.]
+    # gradient matrix: [-32., +32.]
     # output: [0., +1.]
-    # out_grads = (out_grads + 8.) / 16.
-    std = math.sqrt(32) * 8.
-    # out_grads = (out_grads + std.) / (std*2).
-    out_grads = (out_grads + 0.5) / std
-    # out_grads = (out_grads * std) + 0.5
+    out_grads = (out_grads + 16.) / 32.
+    if (np.min(out_grads) < 0. or np.max(out_grads) > 1.) and VERBOSE:
+        print('WARNING: clipping the gradients tensor, min %.2f max %.2f' % (np.min(out_grads), np.max(out_grads)))
     out_grads = np.clip(out_grads, a_min=0., a_max=1.)
     return out_grads
 
@@ -207,16 +195,29 @@ def grads_psnr(img_grads, gt_grads):
     return _psnr(img_grads, gt_grads)
 
 def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=None):
+    img_grads = torch.from_numpy(_init_grads_psnr(img_grads))
+    img_grads_x = img_grads[..., 0]
+    img_grads_y = img_grads[..., 1]
+    img_grads = torch.sqrt(img_grads_x**2 + img_grads_y**2)
+    img_grads = img_grads.cpu().view(sidelength, sidelength).detach().numpy()
+    # pred = pred.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
+    # pred_x = pred_x.cpu().view(sidelength, sidelength).detach().numpy()
+    # pred_y = pred_y.cpu().view(sidelength, sidelength).detach().numpy()
+    gt_grads = torch.from_numpy(_init_grads_psnr(gt_grads))
+    gt_grads_x = gt_grads[..., 0]
+    gt_grads_y = gt_grads[..., 1]
+    gt_grads = torch.sqrt(gt_grads_x**2 + gt_grads_y**2)
+    gt_grads = gt.cpu().view(sidelength, sidelength).detach().numpy()
+    # gt = gt.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
+    # gt_x = gt_x.cpu().view(sidelength, sidelength).detach().numpy()
+    # gt_y = gt_y.cpu().view(sidelength, sidelength).detach().numpy()
+
     n_images = 1
-    # if gt_grads is not None:
-    #     n_images += 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = caption(img_grads, gt_grads, 'grads')
-    axes[0].imshow(img_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
-    axes[0].set_xlabel(img_caption, color='w')
-    # if gt_grads is not None:
-    #     axes[1].imshow(gt_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
+    axes.imshow(img_grads.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
+    axes.set_xlabel(img_caption, color='w')
     plt.show()
 
 # --- LAPLACIAN ---
@@ -237,11 +238,9 @@ def _init_laplace_psnr(in_laplace, sidelength=256):
     # why 8. and 16.?
     # original image tensor: [-1., +1.]
     # laplacian matrix: [-8., +8]
-    # output: [0., +1.]
-    # out_laplace = (out_laplace + 8.) / 16.
-    std = math.sqrt(32) * 8.
-    out_laplace = (out_laplace + 0.5) / std
-    # out_laplace = (out_laplace * std) + 0.5
+    out_laplace = (out_laplace + 8.) / 16.
+    if (np.min(out_laplace) < 0. or np.max(out_laplace) > 1.) and VERBOSE:
+        print('WARNING: clipping the laplacian tensor, min %.2f max %.2f' % (np.min(out_laplace), np.max(out_laplace)))
     out_laplace = np.clip(out_laplace, a_min=0., a_max=1.)
     return out_laplace
 
@@ -256,14 +255,15 @@ def laplace_psnr(img_laplace, gt_laplace):
     return _psnr(img_laplace, gt_laplace)
 
 def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None):
+    img_laplace = torch.from_numpy(_init_laplace_psnr(img_laplace))
+    img_laplace = img_laplace.cpu().view(sidelength, sidelength).detach().numpy()
+    gt_laplace = torch.from_numpy(_init_laplace_psnr(gt_laplace))
+    gt_laplace = gt_laplace.cpu().view(sidelength, sidelength).detach().numpy()
+
     n_images = 1
-    # if gt_laplace is not None:
-    #     n_images += 1
-    _, axes = plt.subplots(1,n_images, figsize=(18,6))
+    _, axes = plt.subplots(1, n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = caption(img_laplace, gt_laplace, 'laplace')
-    axes[0].imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
-    axes[0].set_xlabel(img_caption, color='w')
-    # if gt_laplace is not None:
-    #     axes[1].imshow(gt_laplace.cpu().view(sidelength, sidelength).detach().numpy())
+    axes.imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
+    axes.set_xlabel(img_caption, color='w')
     plt.show()
