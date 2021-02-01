@@ -4,7 +4,7 @@ import math
 import torch
 import torchvision
 from torchvision import transforms
-from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Grayscale, ToPILImage, GaussianBlur
+from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Grayscale, ToPILImage # , GaussianBlur
 import matplotlib.pyplot as plt
 import skimage
 
@@ -111,9 +111,9 @@ def monocromatic_img(color=255, sidelength=256):
     img = transform(img)
     return img
 
-def blur_img(img):
-    '''Hard blur an image (with presets)'''
-    return GaussianBlur(99., (0.1, 99.))(img)
+# def blur_img(img):
+#     '''Hard blur an image (with presets)'''
+#     return GaussianBlur(99., (0.1, 99.))(img)
 
 def _init_img_psnr(in_img, sidelength=256):
     if torch.is_tensor(in_img):
