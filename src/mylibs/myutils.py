@@ -115,7 +115,7 @@ def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False,
     axes[0].imshow(img['img'].cpu().view(sidelength, sidelength).detach().numpy())
     axes[0].set_xlabel(img_caption['img'], color=color)
     axes[1].imshow(img['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy())
-    axes[1].set_xlabel(img_caption['grads'], col or=color)
+    axes[1].set_xlabel(img_caption['grads'], color=color)
     axes[2].imshow(img['laplace'].cpu().view(sidelength, sidelength).detach().numpy())
     axes[2].set_xlabel(img_caption['laplace'], color=color)
     if save:
