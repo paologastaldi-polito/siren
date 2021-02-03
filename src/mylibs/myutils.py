@@ -102,6 +102,8 @@ def plot_all(img, gt, sidelength=256, img_caption=None, save=False, fname='figur
     '''Plot image, gradients and laplacian all at the same time (only for the generated image)'''
     n_images = 3
     fig, axes = plt.subplots(1, n_images, figsize=(18,6))
+    fig.axes.get_xaxis().set_ticks([])
+    fig.axes.get_yaxis().set_ticks([])
     if img_caption is None:
         img_caption = {
             'img' : caption(img['img'], gt['img'], 'img', sidelength=sidelength),
