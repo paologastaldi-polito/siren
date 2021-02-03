@@ -98,15 +98,15 @@ def caption(pred, gt=None, type=None, sidelength=256):
         label = None
     return label
 
-def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
+def plot_all(img, gt, sidelength=256, img_caption=None, save=False, fname='figure.png'):
     '''Plot image, gradients and laplacian all at the same time (only for the generated image)'''
     n_images = 3
     fig, axes = plt.subplots(1, n_images, figsize=(18,6))
     if img_caption is None:
         img_caption = {
-            'img' : caption(img['img'], gt['img'], 'img', sidelength=sidelength, silent=silent),
-            'grads' : caption(img['grads'], gt['grads'], 'grads', sidelength=sidelength, silent=silent),
-            'laplace' : caption(img['laplace'], gt['laplace'], 'laplace', sidelength=sidelength, silent=silent)
+            'img' : caption(img['img'], gt['img'], 'img', sidelength=sidelength),
+            'grads' : caption(img['grads'], gt['grads'], 'grads', sidelength=sidelengt),
+            'laplace' : caption(img['laplace'], gt['laplace'], 'laplace', sidelength=sidelength)
         }
     if save:
         color='k'
