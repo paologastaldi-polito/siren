@@ -103,8 +103,8 @@ def plot_all(img, gt, sidelength=256, img_caption=None, save=False, fname='figur
     n_images = 3
     fig, axes = plt.subplots(1, n_images, figsize=(18,6))
     for a in axes:
-        a.get_xaxis().set_ticks([])
-        a.get_yaxis().set_ticks([])
+        a.set_xticks([])
+        a.set_yticks([])
     if img_caption is None:
         img_caption = {
             'img' : caption(img['img'], gt['img'], 'img', sidelength=sidelength),
