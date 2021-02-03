@@ -118,6 +118,7 @@ def plot_all(img, gt, sidelength=256, img_caption=None, silent=True, save=False,
     axes[1].set_xlabel(img_caption['grads'], color=color)
     axes[2].imshow(img['laplace'].cpu().view(sidelength, sidelength).detach().numpy())
     axes[2].set_xlabel(img_caption['laplace'], color=color)
+    plt.axes(frameon=False)
     if save:
         plt.savefig(fname=fname, format='png')
     plt.show()
