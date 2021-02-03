@@ -105,7 +105,7 @@ def plot_all(img, gt, sidelength=256, img_caption=None, save=False, fname='figur
     if img_caption is None:
         img_caption = {
             'img' : caption(img['img'], gt['img'], 'img', sidelength=sidelength),
-            'grads' : caption(img['grads'], gt['grads'], 'grads', sidelength=sidelengt),
+            'grads' : caption(img['grads'], gt['grads'], 'grads', sidelength=sidelength),
             'laplace' : caption(img['laplace'], gt['laplace'], 'laplace', sidelength=sidelength)
         }
     if save:
