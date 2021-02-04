@@ -378,7 +378,7 @@ def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.p
         plt.savefig(fname=fname, format='png')
     plt.show()
 
-def formatted_plot(sidelength=256, siren_dict, relu_dict, fname='fig.png'):
+def formatted_plot(siren_dict, relu_dict, sidelength=256, fname='fig.png'):
     fig = plt.figure(constrained_layout=False, figsize=(20, 20))
     gs = fig.add_gridspec(49, 49, wspace=4, hspace=4, right=0.755, left=0)
     a1 = fig.add_subplot(gs[:16, :16])
