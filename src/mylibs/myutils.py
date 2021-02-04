@@ -122,7 +122,7 @@ def plot_all(img, gt, sidelength=256, img_caption=None, save=False, fname='figur
     axes[2].imshow(img['laplace'].cpu().view(sidelength, sidelength).detach().numpy())
     axes[2].set_xlabel(img_caption['laplace'], color=color)
     if save:
-        plt.savefig(fname=fname, format='png')
+        plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
 
 # --- IMAGE ---
@@ -375,7 +375,7 @@ def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.p
             plt.plot(x, y, label=s)
     plt.legend(loc='upper left')
     if save:
-        plt.savefig(fname=fname, format='png')
+        plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
 
 def formatted_plot(siren_dict, relu_dict, sidelength=256, fname='fig.png'):
