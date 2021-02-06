@@ -47,7 +47,7 @@ def get_starfish_tensor(sidelength):
     return img
 
 class PoissonEqn(Dataset):
-    def __init__(self, sidelength, img_type='cameraman', gradients=False, laplace=False):
+    def __init__(self, sidelength, img_type='cameraman', gradients=True, laplace=True):
         super().__init__()
         self.values = {}
 
