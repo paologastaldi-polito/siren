@@ -165,8 +165,8 @@ def img_psnr(img, gt, sidelength=256, silent=True):
         img = img['img']
     if type(gt) is dict:
         gt = gt['img']
-    img = _init_img_psnr(img, sidelength, silent=silent)
-    gt = _init_img_psnr(gt, sidelength, silent=silent)
+    img = _init_img_psnr(img, sidelength=sidelength, silent=silent)
+    gt = _init_img_psnr(gt, sidelength=sidelength, silent=silent)
     return _psnr(img, gt)
 
 def img_ssim(img, gt, sidelength=256, silent=True):
@@ -175,8 +175,8 @@ def img_ssim(img, gt, sidelength=256, silent=True):
         img = img['img']
     if type(gt) is dict:
         gt = gt['img']
-    img = _init_img_psnr(img, sidelength, silent=silent)
-    gt = _init_img_psnr(gt, sidelength, silent=silent)
+    img = _init_img_psnr(img, sidelength=sidelength, silent=silent)
+    gt = _init_img_psnr(gt, sidelength=sidelength, silent=silent)
     return _ssim(img, gt)
 
 def plot_img(img, gt=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
@@ -245,8 +245,8 @@ def grads_psnr(img_grads, gt_grads, sidelength=256, silent=True):
     #     img_grads = merge_grads(img_grads[..., 0].unsqueeze(-1), img_grads[..., 1].unsqueeze(-1))
     # if len(gt_grads.shape) != 2:
     #     gt_grads = merge_grads(gt_grads[..., 0].unsqueeze(-1), gt_grads[..., 1].unsqueeze(-1))
-    img_grads = _init_grads_psnr(img_grads, sidelength, silent=silent)
-    gt_grads = _init_grads_psnr(gt_grads, sidelength, silent=silent)
+    img_grads = _init_grads_psnr(img_grads, sidelength=sidelength, silent=silent)
+    gt_grads = _init_grads_psnr(gt_grads, sidelength=sidelength, silent=silent)
     return _psnr(img_grads, gt_grads)
 
 def grads_ssim(img_grads, gt_grads, sidelength=256, silent=True):
@@ -259,8 +259,8 @@ def grads_ssim(img_grads, gt_grads, sidelength=256, silent=True):
     #     img_grads = merge_grads(img_grads[..., 0].unsqueeze(-1), img_grads[..., 1].unsqueeze(-1))
     # if len(gt_grads.shape) != 2:
     #     gt_grads = merge_grads(gt_grads[..., 0].unsqueeze(-1), gt_grads[..., 1].unsqueeze(-1))
-    img_grads = _init_grads_psnr(img_grads, sidelength, silent=silent)
-    gt_grads = _init_grads_psnr(gt_grads, sidelength, silent=silent)
+    img_grads = _init_grads_psnr(img_grads, sidelength=sidelength, silent=silent)
+    gt_grads = _init_grads_psnr(gt_grads, sidelength=sidelength, silent=silent)
     return _ssim(img_grads, gt_grads)
 
 def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
@@ -329,8 +329,8 @@ def laplace_psnr(img_laplace, gt_laplace, sidelength=256, silent=True):
         img_laplace = img_laplace['laplace']
     if type(gt_laplace) is dict:
         gt_laplace = gt_laplace['laplace']
-    img_laplace = _init_laplace_psnr(img_laplace, sidelength, silent=silent)
-    gt_laplace = _init_laplace_psnr(gt_laplace, sidelength, silent=silent)
+    img_laplace = _init_laplace_psnr(img_laplace, sidelength=sidelength, silent=silent)
+    gt_laplace = _init_laplace_psnr(gt_laplace, sidelength=sidelength, silent=silent)
     return _psnr(img_laplace, gt_laplace)
 
 def laplace_ssim(img_laplace, gt_laplace, sidelength=256, silent=True):
@@ -339,8 +339,8 @@ def laplace_ssim(img_laplace, gt_laplace, sidelength=256, silent=True):
         img_laplace = img_laplace['laplace']
     if type(gt_laplace) is dict:
         gt_laplace = gt_laplace['laplace']
-    img_laplace = _init_laplace_psnr(img_laplace, sidelength, silent=silent)
-    gt_laplace = _init_laplace_psnr(gt_laplace, sidelength, silent=silent)
+    img_laplace = _init_laplace_psnr(img_laplace, sidelength=sidelength, silent=silent)
+    gt_laplace = _init_laplace_psnr(gt_laplace, sidelength=sidelength, silent=silent)
     return _ssim(img_laplace, gt_laplace)
 
 def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
