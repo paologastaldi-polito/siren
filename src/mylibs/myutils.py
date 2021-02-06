@@ -65,12 +65,12 @@ def caption(pred, gt=None, type=None, sidelength=256, silent=True):
         psnr = -999.
         ssim = -999.
         if type == 'img':
-            pred = torch.from_numpy(_init_img_psnr(pred))
+            pred = torch.from_numpy(_init_img_psnr(pred, sidelength=sidelength))
             pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
-            gt = torch.from_numpy(_init_img_psnr(gt))
+            gt = torch.from_numpy(_init_img_psnr(gt, sidelength=sidelength))
             gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
         elif type == 'grads':
-            pred = torch.from_numpy(_init_grads_psnr(pred))
+            pred = torch.from_numpy(_init_grads_psnr(pred, sidelength=sidelength))
             pred_x = pred[..., 0]
             pred_y = pred[..., 1]
             pred = torch.sqrt(pred_x**2 + pred_y**2)
@@ -78,7 +78,7 @@ def caption(pred, gt=None, type=None, sidelength=256, silent=True):
             # pred = pred.cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy()
             # pred_x = pred_x.cpu().view(sidelength, sidelength).detach().numpy()
             # pred_y = pred_y.cpu().view(sidelength, sidelength).detach().numpy()
-            gt = torch.from_numpy(_init_grads_psnr(gt))
+            gt = torch.from_numpy(_init_grads_psnr(gt, sidelength=sidelength))
             gt_x = gt[..., 0]
             gt_y = gt[..., 1]
             gt = torch.sqrt(gt_x**2 + gt_y**2)
@@ -87,9 +87,9 @@ def caption(pred, gt=None, type=None, sidelength=256, silent=True):
             # gt_x = gt_x.cpu().view(sidelength, sidelength).detach().numpy()
             # gt_y = gt_y.cpu().view(sidelength, sidelength).detach().numpy()
         elif type == 'laplace':
-            pred = torch.from_numpy(_init_laplace_psnr(pred))
+            pred = torch.from_numpy(_init_laplace_psnr(pred, sidelength=sidelength))
             pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
-            gt = torch.from_numpy(_init_laplace_psnr(gt))
+            gt = torch.from_numpy(_init_laplace_psnr(gt, sidelength=sidelength))
             gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
         psnr = _psnr(pred, gt)
         ssim = _ssim(pred, gt)
