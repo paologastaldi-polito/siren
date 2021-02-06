@@ -146,10 +146,11 @@ def monocromatic_img(color=255, sidelength=256):
 
 def _init_img_psnr(in_img, sidelength=256, silent=True):
     if torch.is_tensor(in_img):
-        out_img = in_img.cpu().view(sidelength, sidelength).detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
+        out_img = in_img.cpu().detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     else:
         out_img = in_img
     out_img = out_img.transpose(1, 2, 0) # only for the image
+    out_img = torch.from_numpy(out_img).view(sidelength, sidelength).numpy()
     # why 1. and 2.?
     # original image tensor: [-1., +1.]
     # output: [0., +1.]
@@ -241,10 +242,6 @@ def grads_psnr(img_grads, gt_grads, sidelength=256, silent=True):
         img_grads = img_grads['grads']
     if type(gt_grads) is dict:
         gt_grads = gt_grads['grads']
-    # if len(img_grads.shape) != 2:
-    #     img_grads = merge_grads(img_grads[..., 0].unsqueeze(-1), img_grads[..., 1].unsqueeze(-1))
-    # if len(gt_grads.shape) != 2:
-    #     gt_grads = merge_grads(gt_grads[..., 0].unsqueeze(-1), gt_grads[..., 1].unsqueeze(-1))
     img_grads = _init_grads_psnr(img_grads, sidelength=sidelength, silent=silent)
     gt_grads = _init_grads_psnr(gt_grads, sidelength=sidelength, silent=silent)
     return _psnr(img_grads, gt_grads)
@@ -255,10 +252,6 @@ def grads_ssim(img_grads, gt_grads, sidelength=256, silent=True):
         img_grads = img_grads['grads']
     if type(gt_grads) is dict:
         gt_grads = gt_grads['grads']
-    # if len(img_grads.shape) != 2:
-    #     img_grads = merge_grads(img_grads[..., 0].unsqueeze(-1), img_grads[..., 1].unsqueeze(-1))
-    # if len(gt_grads.shape) != 2:
-    #     gt_grads = merge_grads(gt_grads[..., 0].unsqueeze(-1), gt_grads[..., 1].unsqueeze(-1))
     img_grads = _init_grads_psnr(img_grads, sidelength=sidelength, silent=silent)
     gt_grads = _init_grads_psnr(gt_grads, sidelength=sidelength, silent=silent)
     return _ssim(img_grads, gt_grads)
