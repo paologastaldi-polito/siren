@@ -386,7 +386,7 @@ def ssim(pred, gt, sidelength=256, silent=True):
     gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
     return _ssim(pred, gt)
 
-def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.png'):
+def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.png', ylabel='PSNR'):
     '''psnrs: dict
     total_steps: int
     title: str
@@ -397,7 +397,7 @@ def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.p
     plt.figure(figsize=(12, 6))
     plt.title(title, color=color, fontsize=16)
     plt.xlabel('iterations', color=color, fontsize=14)
-    plt.ylabel('PSNR', color=color, fontsize=14)
+    plt.ylabel(ylabel, color=color, fontsize=14)
     plt.xticks(color=color)
     plt.yticks(color=color)
     plt.xlim(0, total_steps)
@@ -425,7 +425,7 @@ def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'
 
     a2 = fig.add_subplot(gs[0, 1])
     a2.set_xlim(0, total_steps)
-    a2.set_ylim(0, 1)
+    # a2.set_ylim(0, 1.3) # a bit of margin on the top
     a2.set_xlabel('iterations', fontsize=size)
     a2.set_ylabel('SSIM', fontsize=size)
     a2.grid(linestyle='--')
