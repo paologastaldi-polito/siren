@@ -58,7 +58,7 @@ def _ssim(pred, gt,  max_pixel=1.):
     ssim_noise = skimage.metrics.structural_similarity(gt, pred, data_range=max_pixel)
     return ssim_noise
 
-def caption(pred, gt=None, type=None, sidelength=256):
+def caption(pred, gt=None, type=None, sidelength=256, silent=True):
     '''Generate a caption automatically'''
     label = 'PSNR: {:.2f}, SSIM: {:.2f}'
     if gt is not None:
@@ -165,7 +165,7 @@ def img_psnr(img, gt, sidelength=256, silent=True):
         img = img['img']
     if type(gt) is dict:
         gt = gt['img']
-    img = _init_img_psnr(img, sidelength, sidelengthsilent=silent)
+    img = _init_img_psnr(img, sidelength, sidelength, silent=silent)
     gt = _init_img_psnr(gt, sidelength, silent=silent)
     return _psnr(img, gt)
 
