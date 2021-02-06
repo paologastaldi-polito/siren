@@ -386,7 +386,7 @@ def ssim(pred, gt, sidelength=256, silent=True):
     gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
     return _ssim(pred, gt)
 
-def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.png', ylabel='PSNR'):
+def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.png', ylabel='PSNR', xsize=12, ysize=6):
     '''psnrs: dict
     total_steps: int
     title: str
@@ -394,7 +394,7 @@ def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.p
     if save:
         color='k'
     x = [i for i in range(total_steps+1)]
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(xsize, ysize))
     plt.title(title, color=color, fontsize=16)
     plt.xlabel('iterations', color=color, fontsize=14)
     plt.ylabel(ylabel, color=color, fontsize=14)
