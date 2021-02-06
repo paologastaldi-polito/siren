@@ -146,7 +146,7 @@ def monocromatic_img(color=255, sidelength=256):
 
 def _init_img_psnr(in_img, sidelength=256, silent=True):
     if torch.is_tensor(in_img):
-        out_img = in_img.cpu().detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
+        out_img = in_img.cpu().view(sidelength, sidelength).detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     else:
         out_img = in_img
     out_img = out_img.transpose(1, 2, 0) # only for the image
@@ -222,7 +222,7 @@ def sobel_filter(img, scale_fact=1.):
 
 def _init_grads_psnr(in_grads, sidelength=256, silent=True):
     if torch.is_tensor(in_grads):
-        out_grads = in_grads.cpu().detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
+        out_grads = in_grads.cpu().view(sidelength, sidelength).detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     else:
         out_grads = in_grads
     # why 16. and 32.?
@@ -311,7 +311,7 @@ def laplace_filter(img, scale_fact=1.):
 
 def _init_laplace_psnr(in_laplace, sidelength=256, silent=True):
     if torch.is_tensor(in_laplace):
-        out_laplace = in_laplace.cpu().detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
+        out_laplace = in_laplace.cpu().view(sidelength, sidelength).detach().numpy() # tensors do not have to be attached to the graph and running on the GPU anymore
     else:
         out_laplace = in_laplace
     # why 8. and 16.?
