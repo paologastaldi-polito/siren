@@ -165,7 +165,7 @@ def img_psnr(img, gt, sidelength=256, silent=True):
         img = img['img']
     if type(gt) is dict:
         gt = gt['img']
-    img = _init_img_psnr(img, sidelength, sidelength, silent=silent)
+    img = _init_img_psnr(img, sidelength, silent=silent)
     gt = _init_img_psnr(gt, sidelength, silent=silent)
     return _psnr(img, gt)
 
