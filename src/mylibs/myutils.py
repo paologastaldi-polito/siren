@@ -392,11 +392,9 @@ def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'
     gs = fig.add_gridspec(1, 2)
     a1 = fig.add_subplot(gs[0, 0])
     a1.set_xlim(0, total_steps)
-    a1.set_ylim(0, 1)
     a1.set_xlabel('iterations', fontsize=size)
     a1.set_ylabel('PSNR', fontsize=size)
     a1.grid(linestyle='--')
-    a1.legend(loc='lower right')
 
     a2 = fig.add_subplot(gs[0, 1])
     a2.set_xlim(0, total_steps)
@@ -404,11 +402,14 @@ def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'
     a2.set_xlabel('iterations', fontsize=size)
     a2.set_ylabel('SSIM', fontsize=size)
     a2.grid(linestyle='--')
-    a2.legend(loc='lower right')
     for s, y in psnrs.items():
         a1.plot(x, y, label=s)
     for s, y in ssims.items():
         a2.plot(x, y, label=s)
+    
+    a1.legend(loc='lower right')
+    a2.legend(loc='lower right')
+    
     if save:
         plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
