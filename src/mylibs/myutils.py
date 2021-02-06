@@ -159,24 +159,24 @@ def _init_img_psnr(in_img, sidelength=256, silent=True):
     out_img = np.clip(out_img, a_min=0., a_max=1.)
     return out_img
 
-def img_psnr(img, gt, silent=True):
+def img_psnr(img, gt, sidelength=256, silent=True):
     '''Compute PSNR over image'''
     if type(img) is dict:
         img = img['img']
     if type(gt) is dict:
         gt = gt['img']
-    img = _init_img_psnr(img, silent=silent)
-    gt = _init_img_psnr(gt, silent=silent)
+    img = _init_img_psnr(img, sidelength, sidelengthsilent=silent)
+    gt = _init_img_psnr(gt, sidelength, silent=silent)
     return _psnr(img, gt)
 
-def img_ssim(img, gt, silent=True):
+def img_ssim(img, gt, sidelength=256, silent=True):
     '''Compute SSIM over image'''
     if type(img) is dict:
         img = img['img']
     if type(gt) is dict:
         gt = gt['img']
-    img = _init_img_psnr(img, silent=silent)
-    gt = _init_img_psnr(gt, silent=silent)
+    img = _init_img_psnr(img, sidelength, silent=silent)
+    gt = _init_img_psnr(gt, sidelength, silent=silent)
     return _ssim(img, gt)
 
 def plot_img(img, gt=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
@@ -235,7 +235,7 @@ def _init_grads_psnr(in_grads, sidelength=256, silent=True):
     out_grads = np.clip(out_grads, a_min=0., a_max=1.)
     return out_grads
 
-def grads_psnr(img_grads, gt_grads, silent=True):
+def grads_psnr(img_grads, gt_grads, sidelength=256, silent=True):
     '''Compute PSNR over gradients'''
     if type(img_grads) is dict:
         img_grads = img_grads['grads']
@@ -245,11 +245,11 @@ def grads_psnr(img_grads, gt_grads, silent=True):
     #     img_grads = merge_grads(img_grads[..., 0].unsqueeze(-1), img_grads[..., 1].unsqueeze(-1))
     # if len(gt_grads.shape) != 2:
     #     gt_grads = merge_grads(gt_grads[..., 0].unsqueeze(-1), gt_grads[..., 1].unsqueeze(-1))
-    img_grads = _init_grads_psnr(img_grads, silent=silent)
-    gt_grads = _init_grads_psnr(gt_grads, silent=silent)
+    img_grads = _init_grads_psnr(img_grads, sidelength, silent=silent)
+    gt_grads = _init_grads_psnr(gt_grads, sidelength, silent=silent)
     return _psnr(img_grads, gt_grads)
 
-def grads_ssim(img_grads, gt_grads, silent=True):
+def grads_ssim(img_grads, gt_grads, sidelength=256, silent=True):
     '''Compute SSIM over gradients'''
     if type(img_grads) is dict:
         img_grads = img_grads['grads']
@@ -259,8 +259,8 @@ def grads_ssim(img_grads, gt_grads, silent=True):
     #     img_grads = merge_grads(img_grads[..., 0].unsqueeze(-1), img_grads[..., 1].unsqueeze(-1))
     # if len(gt_grads.shape) != 2:
     #     gt_grads = merge_grads(gt_grads[..., 0].unsqueeze(-1), gt_grads[..., 1].unsqueeze(-1))
-    img_grads = _init_grads_psnr(img_grads, silent=silent)
-    gt_grads = _init_grads_psnr(gt_grads, silent=silent)
+    img_grads = _init_grads_psnr(img_grads, sidelength, silent=silent)
+    gt_grads = _init_grads_psnr(gt_grads, sidelength, silent=silent)
     return _ssim(img_grads, gt_grads)
 
 def plot_grads(img_grads, gt_grads=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
@@ -323,24 +323,24 @@ def _init_laplace_psnr(in_laplace, sidelength=256, silent=True):
     out_laplace = np.clip(out_laplace, a_min=0., a_max=1.)
     return out_laplace
 
-def laplace_psnr(img_laplace, gt_laplace, silent=True):
+def laplace_psnr(img_laplace, gt_laplace, sidelength=256, silent=True):
     '''Compute PSNR over laplacian'''
     if type(img_laplace) is dict:
         img_laplace = img_laplace['laplace']
     if type(gt_laplace) is dict:
         gt_laplace = gt_laplace['laplace']
-    img_laplace = _init_laplace_psnr(img_laplace, silent=silent)
-    gt_laplace = _init_laplace_psnr(gt_laplace, silent=silent)
+    img_laplace = _init_laplace_psnr(img_laplace, sidelength, silent=silent)
+    gt_laplace = _init_laplace_psnr(gt_laplace, sidelength, silent=silent)
     return _psnr(img_laplace, gt_laplace)
 
-def laplace_ssim(img_laplace, gt_laplace, silent=True):
+def laplace_ssim(img_laplace, gt_laplace, sidelength=256, silent=True):
     '''Compute SSIM over laplacian'''
     if type(img_laplace) is dict:
         img_laplace = img_laplace['laplace']
     if type(gt_laplace) is dict:
         gt_laplace = gt_laplace['laplace']
-    img_laplace = _init_laplace_psnr(img_laplace, silent=silent)
-    gt_laplace = _init_laplace_psnr(gt_laplace, silent=silent)
+    img_laplace = _init_laplace_psnr(img_laplace, sidelength, silent=silent)
+    gt_laplace = _init_laplace_psnr(gt_laplace, sidelength, silent=silent)
     return _ssim(img_laplace, gt_laplace)
 
 def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
