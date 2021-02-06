@@ -352,6 +352,13 @@ def psnr(pred, gt, sidelength=256, silent=True):
     gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
     return _psnr(pred, gt)
 
+def ssim(pred, gt, sidelength=256, silent=True):
+    pred = torch.from_numpy(_init_img_psnr(pred, silent=silent))
+    pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
+    gt = torch.from_numpy(_init_img_psnr(gt, silent=silent))
+    gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
+    return _ssim(pred, gt)
+
 def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.png'):
     '''psnrs: dict
     total_steps: int
@@ -378,6 +385,34 @@ def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.p
         plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
 
+def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'):
+    x = [i for i in range(total_steps+1)]
+    size = 16
+    fig = plt.figure(constrained_layout=False, figsize=(12, 5))
+    gs = fig.add_gridspec(1, 2)
+    a1 = fig.add_subplot(gs[0, 0])
+    a1.set_xlim(0, total_steps)
+    a1.set_ylim(0, 1)
+    a1.set_xlabel('iterations', fontsize=size)
+    a1.set_ylabel('PSNR', fontsize=size)
+    a1.grid(linestyle='--')
+    a1.legend(loc='lower right')
+
+    a2 = fig.add_subplot(gs[0, 1])
+    a2.set_xlim(0, total_steps)
+    a2.set_ylim(0, 1)
+    a2.set_xlabel('iterations', fontsize=size)
+    a2.set_ylabel('SSIM', fontsize=size)
+    a2.grid(linestyle='--')
+    a2.legend(loc='lower right')
+    for s, y in psnrs.items():
+        a1.plot(x, y, label=s)
+    for s, y in ssims.items():
+        a2.plot(x, y, label=s)
+    if save:
+        plt.savefig(fname=fname, bbox_inches='tight')
+    plt.show()
+    
 def formatted_plot(siren_dict, relu_dict, sidelength=256, fname='fig.png'):
     fig = plt.figure(constrained_layout=False, figsize=(20, 20))
     gs = fig.add_gridspec(49, 49, wspace=4, hspace=4, right=0.755, left=0)
