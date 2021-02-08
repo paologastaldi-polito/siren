@@ -395,7 +395,7 @@ def plot_psnrs(psnrs, total_steps, title, color='w', save=False, fname='figure.p
 def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'):
     x = [i for i in range(total_steps+1)]
     size = 16
-    fig = plt.figure(constrained_layout=False, figsize=(12, 5))
+    fig = plt.figure(constrained_layout=False, figsize=(12, 12))
     gs = fig.add_gridspec(2, 1)
     a1 = fig.add_subplot(gs[0, 0])
     a1.set_xlim(0, total_steps)
