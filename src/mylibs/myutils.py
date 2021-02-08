@@ -396,14 +396,14 @@ def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'
     x = [i for i in range(total_steps+1)]
     size = 16
     fig = plt.figure(constrained_layout=False, figsize=(12, 5))
-    gs = fig.add_gridspec(1, 2)
+    gs = fig.add_gridspec(2, 1)
     a1 = fig.add_subplot(gs[0, 0])
     a1.set_xlim(0, total_steps)
     a1.set_xlabel('iterations', fontsize=size)
     a1.set_ylabel('PSNR', fontsize=size)
     a1.grid(linestyle='--')
 
-    a2 = fig.add_subplot(gs[0, 1])
+    a2 = fig.add_subplot(gs[1, 0])
     a2.set_xlim(0, total_steps)
     # a2.set_ylim(0, 1.3) # a bit of margin on the top
     a2.set_xlabel('iterations', fontsize=size)
