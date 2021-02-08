@@ -355,23 +355,6 @@ def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None,
         plt.savefig(fname=fname, format='png')
     plt.show()
 
-def image_mse(model_output, coords, gt_image):
-    image_loss = ((model_output - gt_image)**2).mean()
-    return image_loss
-
-def gradients_mse(model_output, coords, gt_gradients):
-    # compute gradients on the model
-    gradients = gradient(model_output, coords)
-    # compare them with the ground-truth
-    gradients_loss = torch.mean((gradients - gt_gradients).pow(2).sum(-1))
-    return gradients_loss
- 
-def laplace_mse(model_output, coords, gt_laplace):
-    laplacian = laplace(model_output, coords)
-    # compare them with the ground truth
-    laplace_loss = torch.mean((laplacian - gt_laplace)**2)
-    return laplace_loss
-
 def psnr(pred, gt, sidelength=256, silent=True):
     pred = torch.from_numpy(_init_img_psnr(pred, silent=silent))
     pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
