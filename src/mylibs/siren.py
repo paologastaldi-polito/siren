@@ -83,7 +83,7 @@ class Siren(nn.Module):
             return y, x
         
     def forward_with_activations(self, coords):
-        activations = OrderedDict()
+        activations = {}
 
         activation_count = 0
         x = coords.clone().detach().requires_grad_(True)
