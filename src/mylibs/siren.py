@@ -22,12 +22,19 @@ class Sine_layer(nn.Module):
     def forward(self, x):
         y = torch.sin(self.omega_0 * self.linear(x))
         return y
+    
+    def forward_with_intermediate(self, input): 
+        intermediate = self.omega_0 * self.linear(input)
+        return torch.sin(intermediate), intermediate
 
 class Siren(nn.Module):
-    def __init__(self, in_features=2, out_features=1, n_hidden_layers=2, hidden_features=256, first_omega_0=30., hidden_omega_0=30., outermost_linear=True, with_vgg_loss=False):
+    def __init__(self, in_features=2, out_features=1, n_hidden_layers=2, hidden_features=256, first_omega_0=30., hidden_omega_0=30., outermost_linear=True, with_vgg_loss=False, with_activations=False):
         '''Our classic SIREN network for this project'''
         super().__init__()
-
+        
+        if with_activations:
+            hidden_features = 2048
+        
         self.in_features = in_features
         self.out_features = out_features
            
@@ -74,3 +81,23 @@ class Siren(nn.Module):
             x = x.clone().detach().requires_grad_(True)
             y = self.net(x)
             return y, x
+        
+    def forward_with_activations(self, coords):
+        activations = OrderedDict()
+
+        activation_count = 0
+        x = coords.clone().detach().requires_grad_(True)
+        activations['input'] = x
+        for i, layer in enumerate(self.net):
+            if isinstance(layer, Sine_layer):
+                x, intermed = layer.forward_with_intermediate(x)
+                    
+                activations['_'.join((str(layer.__class__), "%d" % activation_count))] = intermed
+                activation_count += 1
+            else: 
+                x = layer(x)
+                    
+            activations['_'.join((str(layer.__class__), "%d" % activation_count))] = x
+            activation_count += 1
+
+        return activations
