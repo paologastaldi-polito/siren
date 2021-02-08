@@ -588,7 +588,7 @@ def get_spectrum(activations):
 
 def plot_all_activations_and_grads(activations, title):
     num_cols = 2
-    num_rows = len(activations)
+    num_rows = len(activations) - 1
     
     fig_width = 5.5
     fig_height = num_rows/num_cols*fig_width
@@ -610,32 +610,33 @@ def plot_all_activations_and_grads(activations, title):
     spec_rows = []
     for idx, (key, value) in enumerate(activations.items()):   
         
-        value = value.cpu().detach().squeeze(0) # (1, num_points, 256)
-        n = value.shape[0]
-        flat_value = value.view(-1)
-            
-        axs[idx][0].hist(flat_value, bins=256, density=True)
-                
-        if idx>1:
-            if not (idx)%2:
-                x = np.linspace(-1, 1., 500)
-                axs[idx][0].plot(x, stats.arcsine.pdf(x, -1, 2), 
-                                 linestyle=':', markersize=0.4, zorder=2)
-            else:
-                mu = 0
-                variance = 1
-                sigma = np.sqrt(variance)
-                x = np.linspace(mu - 3*sigma, mu + 3*sigma, 500)
-                axs[idx][0].plot(x, stats.norm.pdf(x, mu, sigma), 
-                                 linestyle=':', markersize=0.4, zorder=2)
-        
-        activ_freq, activ_spec = get_spectrum(value)
-        axs[idx][1].plot(activ_freq, activ_spec)
- 
-        for ax in axs[idx]:
-            ax.tick_params(axis='both', which='major', direction='in',
-                                    labelsize=fontsize, pad=1., zorder=10) 
-            ax.tick_params(axis='x', labelrotation=0, pad=1.5, zorder=10) 
+        if idx < num_rows:
+          value = value.cpu().detach().squeeze(0) # (1, num_points, 256)
+          n = value.shape[0]
+          flat_value = value.view(-1)
+              
+          axs[idx][0].hist(flat_value, bins=256, density=True)
+                  
+          if idx>1:
+              if not (idx)%2:
+                  x = np.linspace(-1, 1., 500)
+                  axs[idx][0].plot(x, stats.arcsine.pdf(x, -1, 2), 
+                                  linestyle=':', markersize=0.4, zorder=2)
+              else:
+                  mu = 0
+                  variance = 1
+                  sigma = np.sqrt(variance)
+                  x = np.linspace(mu - 3*sigma, mu + 3*sigma, 500)
+                  axs[idx][0].plot(x, stats.norm.pdf(x, mu, sigma), 
+                                  linestyle=':', markersize=0.4, zorder=2)
+          
+          activ_freq, activ_spec = get_spectrum(value)
+          axs[idx][1].plot(activ_freq, activ_spec)
+  
+          for ax in axs[idx]:
+              ax.tick_params(axis='both', which='major', direction='in',
+                                      labelsize=fontsize, pad=1., zorder=10) 
+              ax.tick_params(axis='x', labelrotation=0, pad=1.5, zorder=10) 
 
-            ax.xaxis.set_major_formatter(x_formatter)
-            ax.yaxis.set_major_formatter(y_formatter)
+              ax.xaxis.set_major_formatter(x_formatter)
+              ax.yaxis.set_major_formatter(y_formatter)
