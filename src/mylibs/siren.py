@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
+import myutils
 
 class Sine_layer(nn.Module):
     def __init__(self, in_features, out_features, bias=True, omega_0=30., is_first=False):
@@ -23,14 +24,18 @@ class Sine_layer(nn.Module):
         return y
 
 class Siren(nn.Module):
-    def __init__(self, n_hidden_layers=2, hidden_features=256, first_omega_0=30., hidden_omega_0=30., outermost_linear=True):
+    def __init__(self, in_features=2, out_features=1, n_hidden_layers=2, hidden_features=256, first_omega_0=30., hidden_omega_0=30., outermost_linear=True, with_vgg_loss=False):
         '''Our classic SIREN network for this project'''
         super().__init__()
 
-        # Constants
-        in_features = 2
-        out_features = 1
-
+        self.in_features = in_features
+        self.out_features = out_features
+           
+        if with_vgg_loss:
+            self.vgg_loss = myutils.VGGPerceptualLoss() # when the net is sent to CUDA, vgg loss is too
+        else:
+            self.vgg_loss = None
+            
         self.net = []
 
         # First layer
@@ -52,6 +57,20 @@ class Siren(nn.Module):
         self.net = nn.Sequential(*self.net)
 
     def forward(self, x):
-        x = x.clone().detach().requires_grad_(True)
-        y = self.net(x)
-        return y, x
+        if self.vgg_loss is not None:
+            sidelength = x['sidelength']
+            gt = x['gt']
+            coords = x['coords']
+
+            coords = coords.clone().detach().requires_grad_(True)
+            y = self.net(coords)
+            # y = y.clone().permute(2, 0, 1)
+            # gt = gt.clone().permute(2, 0, 1)
+            _y = y.view(sidelength, sidelength)
+            _gt = gt.view(sidelength, sidelength)
+            loss = self.vgg_loss(_y, _gt)
+            return y, coords, loss
+        else:
+            x = x.clone().detach().requires_grad_(True)
+            y = self.net(x)
+            return y, x
