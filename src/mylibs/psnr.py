@@ -4,10 +4,12 @@ import math
 import torch
 import torchvision
 from torchvision import transforms
+from collections import OrderedDict
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Grayscale, ToPILImage
 # from torchvision.transforms import GaussianBlur
 import matplotlib.pyplot as plt
 import skimage
+import scipy.stats as stats
 
 def _psnr(pred, gt, max_pixel=1.):
     '''peak signal to noise ratio formula'''
@@ -268,3 +270,86 @@ def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None)
     axes.imshow(img_laplace.cpu().view(sidelength, sidelength).detach().numpy())
     axes.set_xlabel(img_caption, color='w')
     plt.show()
+    
+# --- ACTIVATIONS ---
+
+def eformat(f, prec, exp_digits):
+    s = "%.*e"%(prec, f)
+    mantissa, exp = s.split('e')
+    # add 1 to digits as 1 is taken by sign +/-
+    return "%se%+0*d"%(mantissa, exp_digits+1, int(exp))
+
+def format_x_ticks(x, pos):
+    """Format odd tick positions
+    """
+    return eformat(x, 0, 1)
+
+def format_y_ticks(x, pos):
+    """Format odd tick positions
+    """
+    return eformat(x, 0, 1)
+
+def get_spectrum(activations):
+    n = activations.shape[0]
+
+    spectrum = np.fft(activations.numpy().astype(np.double).sum(axis=-1), axis=0)[:n//2]
+    spectrum = np.abs(spectrum)
+
+    max_freq = 100                
+    freq = np.fft.fftfreq(n, 2./n)[:n//2]
+    return freq[:max_freq], spectrum[:max_freq]
+
+
+def plot_all_activations_and_grads(activations, title):
+    num_cols = 2
+    num_rows = len(activations)
+    
+    fig_width = 5.5
+    fig_height = num_rows/num_cols*fig_width
+    fig_height = 9
+    
+    fontsize = 5
+      
+    fig, axs = plt.subplots(num_rows, num_cols, gridspec_kw={'hspace': 0.3, 'wspace': 0.2},
+                            figsize=(fig_width, fig_height), dpi=300)
+
+    axs[0][0].set_title("Activation Distribution", fontsize=7, fontfamily='serif', pad=5.)
+    axs[0][1].set_title("Activation Spectrum", fontsize=7, fontfamily='serif', pad=5.)
+
+    x_formatter = matplotlib.ticker.FuncFormatter(format_x_ticks)
+    y_formatter = matplotlib.ticker.FuncFormatter(format_y_ticks)
+
+    plt.suptitle(title, fontsize=9)
+
+    spec_rows = []
+    for idx, (key, value) in enumerate(activations.items()):   
+        
+        value = value.cpu().detach().squeeze(0) # (1, num_points, 256)
+        n = value.shape[0]
+        flat_value = value.view(-1)
+            
+        axs[idx][0].hist(flat_value, bins=256, density=True)
+                
+        if idx>1:
+            if not (idx)%2:
+                x = np.linspace(-1, 1., 500)
+                axs[idx][0].plot(x, stats.arcsine.pdf(x, -1, 2), 
+                                 linestyle=':', markersize=0.4, zorder=2)
+            else:
+                mu = 0
+                variance = 1
+                sigma = np.sqrt(variance)
+                x = np.linspace(mu - 3*sigma, mu + 3*sigma, 500)
+                axs[idx][0].plot(x, stats.norm.pdf(x, mu, sigma), 
+                                 linestyle=':', markersize=0.4, zorder=2)
+        
+        activ_freq, activ_spec = get_spectrum(value)
+        axs[idx][1].plot(activ_freq, activ_spec)
+ 
+        for ax in axs[idx]:
+            ax.tick_params(axis='both', which='major', direction='in',
+                                    labelsize=fontsize, pad=1., zorder=10) 
+            ax.tick_params(axis='x', labelrotation=0, pad=1.5, zorder=10) 
+
+            ax.xaxis.set_major_formatter(x_formatter)
+            ax.yaxis.set_major_formatter(y_formatter)
