@@ -424,38 +424,137 @@ def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'
         plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
     
-def formatted_plot(siren_dict, relu_dict, sidelength=256, fname='fig.png'):
-    fig = plt.figure(constrained_layout=False, figsize=(20, 20))
-    gs = fig.add_gridspec(49, 49, wspace=4, hspace=4, right=0.755, left=0)
-    a1 = fig.add_subplot(gs[:16, :16])
+def print_fitting_grid(gt_dict, siren_dict, relu_dict, siren_psnr, relu_psnr, figsize=(20, 20), fname='fitting_grid.png', textsize=32): 
+    '''Create custom figure with grid (GT, SIREN, ReLU) x (image, gradient, laplace)'''
+    fig = plt.figure(constrained_layout=False, figsize=figsize)
+    gs = fig.add_gridspec(3, 3, wspace=0, hspace=0)
+    # GT image
+    a1 = fig.add_subplot(gs[0, 0])
+    a1.imshow((gt_dict['img']).cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a1.set_xticks([])
+    a1.set_yticks([])
+    a1.text(5, 20, r'$\mathit{f(x)}$', fontsize=textsize);
+    a1.set_title('Ground truth\n', fontsize=textsize)
+    # GT gradient
+    a2 = fig.add_subplot(gs[1, 0])
+    a2.imshow(gt_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.set_xticks([])
+    a2.set_yticks([])
+    a2.text(5, 20, '$\it{▽f(x)}$', fontsize=textsize, color='w');
+    # GT laplace
+    a3 = fig.add_subplot(gs[2, 0])
+    a3.imshow(gt_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.set_xticks([])
+    a3.set_yticks([])
+    a3.text(5, 20, '$\it{Δf(x)}$', fontsize=textsize);
+    # SIREN image
+    a1 = fig.add_subplot(gs[0, 1])
     a1.imshow(siren_dict['img'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a1.set_xticks([])
     a1.set_yticks([])
-    a1.set_title('SIREN')
-    a2 = fig.add_subplot(gs[0:8, 16:24])
+    a1.set_title('SIREN\nPSNR = %.3f dB' % (siren_psnr), fontsize=textsize)
+    # SIREN gradient
+    a2 = fig.add_subplot(gs[1, 1])
     a2.imshow(siren_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a2.set_xticks([])
     a2.set_yticks([])
-    a2.set_title('Gradient')
-    a3 = fig.add_subplot(gs[8:16, 16:24])
+    # SIREN laplace
+    a3 = fig.add_subplot(gs[2, 1])
     a3.imshow(siren_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a3.set_xticks([])
     a3.set_yticks([])
-    a3.set_title('Laplacian')
-    a1 = fig.add_subplot(gs[:16, 25:-8])
+    # ReLU image
+    a1 = fig.add_subplot(gs[0, 2])
     a1.imshow(relu_dict['img'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a1.set_xticks([])
     a1.set_yticks([])
-    a1.set_title('ReLu')
-    a2 = fig.add_subplot(gs[0:8, -8:])
+    a1.set_title('ReLU\nPSNR = %.3f dB' % (relu_psnr), fontsize=textsize)
+    # ReLU gradient
+    a2 = fig.add_subplot(gs[1, 2])
     a2.imshow(relu_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a2.set_xticks([])
     a2.set_yticks([])
-    a2.set_title('Gradient')
-    a3 = fig.add_subplot(gs[8:16, -8:])
+    # ReLU laplace
+    a3 = fig.add_subplot(gs[2, 2])
     a3.imshow(relu_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a3.set_xticks([])
     a3.set_yticks([])
-    a3.set_title('Laplacian')
+    # save and show the figure
     plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
+    
+def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict, figsize=(24, 18), fname='poisson_grid.png', textsize=32):
+    ''' Create custom figure with grid (GT, GRAD(ReLU), GRAD(SIREN), LAPL(SIREN)) x (image, gradient, laplace)'''
+    fig = plt.figure(constrained_layout=False, figsize=figsize)
+    gs = fig.add_gridspec(3, 4, wspace=0, hspace=0)
+    # GT image
+    a1 = fig.add_subplot(gs[0, 0])
+    a1.imshow((gt_dict['img']).cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a1.set_xticks([])
+    a1.set_yticks([])
+    a1.text(5, 20, r'$\mathit{f(x)}$', fontsize=textsize);
+    a1.set_title('Ground truth', fontsize=textsize)
+    # GT gradient
+    a2 = fig.add_subplot(gs[1, 0])
+    a2.imshow(gt_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.set_xticks([])
+    a2.set_yticks([])
+    a2.text(5, 20, '$\it{▽f(x)}$', fontsize=textsize, color='w');
+    # GT laplace
+    a3 = fig.add_subplot(gs[2, 0])
+    a3.imshow(gt_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.set_xticks([])
+    a3.set_yticks([])
+    a3.text(5, 20, '$\it{Δf(x)}$', fontsize=textsize);
+    # grad(ReLU) image
+    a1 = fig.add_subplot(gs[0, 1])
+    a1.imshow(relu_grad_dict['img'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a1.set_xticks([])
+    a1.set_yticks([])
+    a1.set_title('ReLU on $\it{▽f(x)}$', fontsize=textsize)
+    # grad(ReLU) gradient
+    a2 = fig.add_subplot(gs[1, 1])
+    a2.imshow(relu_grad_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.set_xticks([])
+    a2.set_yticks([])
+    # grad(ReLU) laplace
+    a3 = fig.add_subplot(gs[2, 1])
+    a3.imshow(relu_grad_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.set_xticks([])
+    a3.set_yticks([])
+    # grad(SIREN)
+    a1 = fig.add_subplot(gs[0, 2])
+    a1.imshow(siren_grad_dict['img'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a1.set_xticks([])
+    a1.set_yticks([])
+    a1.set_title('SIREN on $\it{▽f(x)}$', fontsize=textsize)
+    # grad(SIREN) gradient
+    a2 = fig.add_subplot(gs[1, 2])
+    a2.imshow(siren_grad_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.set_xticks([])
+    a2.set_yticks([])
+    # grad(SIREN) laplace
+    a3 = fig.add_subplot(gs[2, 2])
+    a3.imshow(siren_grad_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.set_xticks([])
+    a3.set_yticks([])
+    # lapl(SIREN) image
+    a1 = fig.add_subplot(gs[0, 3])
+    a1.imshow(siren_lapl_dict['img'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a1.set_xticks([])
+    a1.set_yticks([])
+    a1.set_title('SIREN on $\it{Δf(x)}$', fontsize=textsize)
+    # lapl(SIREN) gradient
+    a2 = fig.add_subplot(gs[1, 3])
+    a2.imshow(siren_lapl_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.set_xticks([])
+    a2.set_yticks([])
+    # lapl(SIREN) laplace
+    a3 = fig.add_subplot(gs[2, 3])
+    a3.imshow(siren_lapl_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.set_xticks([])
+    a3.set_yticks([])
+    # save and show the figure
+    plt.savefig(fname=fname, bbox_inches='tight')
+    plt.show()
+    
