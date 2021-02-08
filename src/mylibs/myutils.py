@@ -353,16 +353,16 @@ def plot_laplace(img_laplace, gt_laplace=None, sidelength=256, img_caption=None,
     plt.show()
 
 def psnr(pred, gt, sidelength=256, silent=True):
-    pred = torch.from_numpy(_init_img_psnr(pred, silent=silent))
+    pred = torch.from_numpy(_init_img_psnr(pred, silent=silent, sidelength=sidelength))
     pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
-    gt = torch.from_numpy(_init_img_psnr(gt, silent=silent))
+    gt = torch.from_numpy(_init_img_psnr(gt, silent=silent, sidelength=sidelength))
     gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
     return _psnr(pred, gt)
 
 def ssim(pred, gt, sidelength=256, silent=True):
-    pred = torch.from_numpy(_init_img_psnr(pred, silent=silent))
+    pred = torch.from_numpy(_init_img_psnr(pred, silent=silent, sidelength=sidelength))
     pred = pred.cpu().view(sidelength, sidelength).detach().numpy()
-    gt = torch.from_numpy(_init_img_psnr(gt, silent=silent))
+    gt = torch.from_numpy(_init_img_psnr(gt, silent=silent, sidelength=sidelength))
     gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
     return _ssim(pred, gt)
 
