@@ -578,7 +578,7 @@ def format_y_ticks(x, pos):
 def get_spectrum(activations):
     n = activations.shape[0]
 
-    spectrum = np.fft(activations.numpy().astype(np.double).sum(axis=-1), axis=0)[:n//2]
+    spectrum = np.fft.fft(activations.numpy().astype(np.double).sum(axis=-1), axis=0)[:n//2]
     spectrum = np.abs(spectrum)
 
     max_freq = 100                
