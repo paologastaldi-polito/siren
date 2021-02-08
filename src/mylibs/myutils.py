@@ -424,7 +424,7 @@ def plot_psnr_and_ssim(psnrs, ssims, total_steps, save=False, fname='figure.png'
         plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
     
-def print_fitting_grid(gt_dict, siren_dict, relu_dict, siren_psnr, relu_psnr, figsize=(20, 20), fname='fitting_grid.png', textsize=32): 
+def print_fitting_grid(gt_dict, siren_dict, relu_dict, siren_psnr, relu_psnr, sidelength=256, figsize=(20, 20), fname='fitting_grid.png', textsize=32): 
     '''Create custom figure with grid (GT, SIREN, ReLU) x (image, gradient, laplace)'''
     fig = plt.figure(constrained_layout=False, figsize=figsize)
     gs = fig.add_gridspec(3, 3, wspace=0, hspace=0)
@@ -483,7 +483,7 @@ def print_fitting_grid(gt_dict, siren_dict, relu_dict, siren_psnr, relu_psnr, fi
     plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
     
-def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict, figsize=(24, 18), fname='poisson_grid.png', textsize=32):
+def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict, sidelength=256, figsize=(24, 18), fname='poisson_grid.png', textsize=32):
     ''' Create custom figure with grid (GT, GRAD(ReLU), GRAD(SIREN), LAPL(SIREN)) x (image, gradient, laplace)'''
     fig = plt.figure(constrained_layout=False, figsize=figsize)
     gs = fig.add_gridspec(3, 4, wspace=0, hspace=0)
