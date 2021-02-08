@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import myutils
+from loss_functions import VGGPerceptualLoss
 
 class Sine_layer(nn.Module):
     def __init__(self, in_features, out_features, bias=True, omega_0=30., is_first=False):
@@ -32,7 +32,7 @@ class Siren(nn.Module):
         self.out_features = out_features
            
         if with_vgg_loss:
-            self.vgg_loss = myutils.VGGPerceptualLoss() # when the net is sent to CUDA, vgg loss is too
+            self.vgg_loss = VGGPerceptualLoss() # when the net is sent to CUDA, vgg loss is too
         else:
             self.vgg_loss = None
             
