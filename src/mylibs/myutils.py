@@ -188,6 +188,8 @@ def plot_img(img, gt=None, sidelength=256, img_caption=None, silent=True, save=F
 
     n_images = 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
+    axes.set_xticks([])
+    axes.set_yticks([])
     if img_caption is None:
         img_caption = caption(img, gt, 'img', sidelength=sidelength, silent=silent)
     if save:
