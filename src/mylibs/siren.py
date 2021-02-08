@@ -94,7 +94,7 @@ class Siren(nn.Module):
                     
                 activations['_'.join((str(layer.__class__), "%d" % activation_count))] = intermed
                 activation_count += 1
-            elif activation_count == 0: 
+            else: 
                 x = layer(x)
                     
             activations['_'.join((str(layer.__class__), "%d" % activation_count))] = x
