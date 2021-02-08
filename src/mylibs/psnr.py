@@ -8,7 +8,7 @@ from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Graysca
 # from torchvision.transforms import GaussianBlur
 import matplotlib.pyplot as plt
 import skimage
-import scipy.stats as stats
+
 
 def _psnr(pred, gt, max_pixel=1.):
     '''peak signal to noise ratio formula'''
