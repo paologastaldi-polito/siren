@@ -181,11 +181,6 @@ def img_ssim(img, gt, sidelength=256, silent=True):
     return _ssim(img, gt)
 
 def plot_img(img, gt=None, sidelength=256, img_caption=None, silent=True, save=False, fname='figure.png'):
-    img = torch.from_numpy(_init_img_psnr(img))
-    img = img.cpu().view(sidelength, sidelength).detach().numpy()
-    gt = torch.from_numpy(_init_img_psnr(gt))
-    gt = gt.cpu().view(sidelength, sidelength).detach().numpy()
-
     n_images = 1
     _, axes = plt.subplots(1,n_images, figsize=(18,6))
     axes.set_xticks([])
