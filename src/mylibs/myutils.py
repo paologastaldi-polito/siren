@@ -3,8 +3,10 @@ import numpy as np
 import math
 import torch
 import torchvision
+import scipy.stats as stats
 from torchvision import transforms
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Grayscale, ToPILImage # , GaussianBlur
+import matplotlib
 import matplotlib.pyplot as plt
 import skimage
 from skimage import metrics
