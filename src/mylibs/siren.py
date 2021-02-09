@@ -71,10 +71,11 @@ class Siren(nn.Module):
 
             coords = coords.clone().detach().requires_grad_(True)
             y = self.net(coords)
-            # y = y.clone().permute(2, 0, 1)
-            # gt = gt.clone().permute(2, 0, 1)
-            _y = y.view(sidelength, sidelength)
-            _gt = gt.view(sidelength, sidelength)
+
+            # Adapt for VGG
+            _y = y.view(sidelength, sidelength).unsqueeze(0).unsqueeze(0)
+            _gt = gt.view(sidelength, sidelength).unsqueeze(0).unsqueeze(0)
+
             loss = self.vgg_loss(_y, _gt)
             return y, coords, loss
         else:
