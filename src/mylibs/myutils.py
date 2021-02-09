@@ -557,10 +557,10 @@ def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict
     plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
     
-def print_sisr_grid(images, sidelength=512, figsize=(21, 3), textsize=22, fname='sisr_grid.png'):
+def print_sisr_grid(images, sidelength=512, figsize=(20, 4), textsize=32, fname='sisr_grid.png'):
     ''' Create custom figure with grid (GT, SIREN, SIREN VGG, ReLU-Nerf, Bicubic, SRGAN)'''
     fig = plt.figure(constrained_layout=False, figsize=figsize)
-    gs = fig.add_gridspec(1, 7, wspace=0, hspace=0)
+    gs = fig.add_gridspec(1, 5, wspace=0, hspace=0)
     # GT
     a1 = fig.add_subplot(gs[0, 0])
     a1.imshow((images['GT']).cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
@@ -573,32 +573,20 @@ def print_sisr_grid(images, sidelength=512, figsize=(21, 3), textsize=22, fname=
     a2.set_xticks([])
     a2.set_yticks([])
     a2.set_title('SIREN', fontsize=textsize)
-    # SIREN VGG
-    a3 = fig.add_subplot(gs[0, 2])
-    a3.imshow(images['SIREN VGG'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
-    a3.set_xticks([])
-    a3.set_yticks([])
-    a3.set_title('SIREN VGG', fontsize=textsize)
-    # SIREN
-    a2 = fig.add_subplot(gs[0, 3])
-    a2.imshow(images['SIREN Nerf'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
-    a2.set_xticks([])
-    a2.set_yticks([])
-    a2.set_title('SIREN Nerf', fontsize=textsize)
     # ReLU-Nerf
-    a4 = fig.add_subplot(gs[0, 4])
+    a4 = fig.add_subplot(gs[0, 2])
     a4.imshow(images['ReLU Nerf'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a4.set_xticks([])
     a4.set_yticks([])
     a4.set_title('ReLU Nerf', fontsize=textsize)
     # Bicubic
-    a5 = fig.add_subplot(gs[0, 5])
+    a5 = fig.add_subplot(gs[0, 3])
     a5.imshow(images['Bicubic'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a5.set_xticks([])
     a5.set_yticks([])
     a5.set_title('Bicubic', fontsize=textsize)
     # SRGAN
-    a6 = fig.add_subplot(gs[0, 6])
+    a6 = fig.add_subplot(gs[0, 4])
     a6.imshow(images['SRGAN'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
     a6.set_xticks([])
     a6.set_yticks([])
