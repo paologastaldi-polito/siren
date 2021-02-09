@@ -557,7 +557,7 @@ def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict
     plt.savefig(fname=fname, bbox_inches='tight')
     plt.show()
     
-def print_sisr_grid(images, sidelength=512, figsize=(21, 3), textsize=32, fname='sisr_grid.png'):
+def print_sisr_grid(images, sidelength=512, figsize=(21, 3), textsize=22, fname='sisr_grid.png'):
     ''' Create custom figure with grid (GT, SIREN, SIREN VGG, ReLU-Nerf, Bicubic, SRGAN)'''
     fig = plt.figure(constrained_layout=False, figsize=figsize)
     gs = fig.add_gridspec(1, 7, wspace=0, hspace=0)
