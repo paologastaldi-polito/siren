@@ -37,3 +37,28 @@ SSIM:
 ```
 
 ### Image 49
+
+```
+SISR 256x256 to 512x512
+hidden layers: 2
+hidden features: 256
+
+PSNR:
+	SIREN: 27.681024
+	SIREN VGG: 27.678150
+	SIREN Nerf: 29.767364
+	SIREN Nerf VGG: 28.016872
+	ReLU Nerf: 20.226530
+	bicubic: 30.607076
+	SRGAN: 31.270539
+
+
+SSIM:
+	SIREN: 0.823792
+	SIREN VGG: 0.830800
+	SIREN Nerf: 0.892779
+	SIREN Nerf VGG: 0.830483
+	ReLU Nerf: 0.365419
+	bicubic: 0.920178
+	SRGAN: 0.942680
+```
