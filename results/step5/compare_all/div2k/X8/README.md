@@ -33,7 +33,24 @@ SISR 64x64 to 512x512
 hidden layers: 2
 hidden features: 256
 
-missing values...
+PSNR:
+	SIREN: 20.910031
+	SIREN VGG: 20.901111
+	SIREN Nerf: 20.685444
+	SIREN Nerf VGG: 20.758118
+	ReLU Nerf: 19.923303
+	bicubic: 21.743741
+	SRGAN: 23.672188
+
+
+SSIM:
+	SIREN: 0.586188
+	SIREN VGG: 0.585602
+	SIREN Nerf: 0.547531
+	SIREN Nerf VGG: 0.554731
+	ReLU Nerf: 0.481257
+	bicubic: 0.601386
+	SRGAN: 0.656393
 ```
 
 ### Image 49
