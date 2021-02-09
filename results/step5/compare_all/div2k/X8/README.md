@@ -1,0 +1,28 @@
+# SISR X8
+
+## Final results
+
+```
+SISR 64x64 to 512x512
+hidden layers: 3
+hidden features: 512
+
+PSNR:
+	SIREN: 17.700985
+	SIREN VGG: 17.707310
+	SIREN Nerf: 17.595160
+	SIREN Nerf VGG: 17.614437
+	ReLU Nerf: 17.401618
+	bicubic: 18.059105
+	SRGAN: 18.206021
+
+
+SSIM:
+	SIREN: 0.275630
+	SIREN VGG: 0.275726
+	SIREN Nerf: 0.261713
+	SIREN Nerf VGG: 0.264887
+	ReLU Nerf: 0.237690
+	bicubic: 0.287678
+	SRGAN: 0.344921
+```
