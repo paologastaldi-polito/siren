@@ -20,10 +20,11 @@ def laplace_mse(model_output, coords, gt_laplace):
     laplace_loss = torch.mean((laplacian - gt_laplace)**2)
     return laplace_loss
 
-
 class VGGPerceptualLoss(torch.nn.Module):
-    def __init__(self, resize=True):
+    def __init__(self, resize=True, with_image_mse=True):
         super(VGGPerceptualLoss, self).__init__()
+
+        self.with_image_mse = with_image_mse
 
         # VGG19:
         # 64, 64, => 4 features
@@ -48,9 +49,9 @@ class VGGPerceptualLoss(torch.nn.Module):
         self.resize = resize
 
     def forward(self, input, target):
-        # if input.shape[1] != 3: # to "RGB"
-        #     input = input.repeat(1, 3, 1, 1)
-        #     target = target.repeat(1, 3, 1, 1)
+        if input.shape[1] != 3: # to "RGB"
+            input = input.repeat(1, 3, 1, 1)
+            target = target.repeat(1, 3, 1, 1)
         input = (input-self.mean) / self.std
         target = (target-self.mean) / self.std
         if self.resize: # adapt the input for the VGG net
@@ -61,12 +62,11 @@ class VGGPerceptualLoss(torch.nn.Module):
         x = input
         y = target
 
-        # loss += (x-y)**2
-        loss += torch.nn.functional.mse_loss(x, y)
+        if self.with_image_mse: # MSE on the image too, not only on the features
+            loss += torch.nn.functional.mse_loss(x, y)
         for block in self.blocks:
             x = block(x)
             y = block(y)
 
             loss += torch.nn.functional.mse_loss(x, y)
-            # loss += (x-y)**2 # / (x.shape[2]*x.shape[3]) => 224x224 per each layer
         return loss
