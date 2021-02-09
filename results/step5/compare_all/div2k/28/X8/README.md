@@ -2,6 +2,7 @@
 
 ## Final results
 
+### Image 28
 ```
 SISR 64x64 to 512x512
 hidden layers: 3
@@ -26,3 +27,13 @@ SSIM:
 	bicubic: 0.287678
 	SRGAN: 0.344921
 ```
+
+```
+SISR 64x64 to 512x512
+hidden layers: 2
+hidden features: 256
+
+missing values...
+```
+
+### Image 49
