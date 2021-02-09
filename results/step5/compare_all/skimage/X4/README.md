@@ -1,0 +1,29 @@
+# SISR X4
+
+## Final results
+
+### Image cameraman
+```
+SISR 128x128 to 512x512
+hidden layers: 3
+hidden features: 512
+
+PSNR:
+	SIREN: 26.597443
+	SIREN VGG: 26.746371
+	SIREN Nerf: 26.401231
+	SIREN Nerf VGG: 26.418888
+	ReLU Nerf: 23.859237
+	bicubic: 26.667215
+	SRGAN: 9.856987
+
+
+SSIM:
+	SIREN: 0.821206
+	SIREN VGG: 0.832294
+	SIREN Nerf: 0.802010
+	SIREN Nerf VGG: 0.818697
+	ReLU Nerf: 0.576294
+	bicubic: 0.836583
+	SRGAN: 0.269074
+```
