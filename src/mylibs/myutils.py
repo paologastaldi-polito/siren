@@ -8,8 +8,11 @@ from torchvision import transforms
 from torchvision.transforms import Resize, Compose, ToTensor, Normalize, Grayscale, ToPILImage # , GaussianBlur
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import skimage
 from skimage import metrics
+import cv2
+import cmapy
 
 def gradient(y, x, grad_outputs=None):
     if grad_outputs is None:
