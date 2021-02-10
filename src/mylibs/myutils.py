@@ -65,8 +65,8 @@ def cool_gradient(gradient):
     return torch.from_numpy(mGrgb)
 
 def cool_laplace(laplace):
-    xmin = np.percentile(laplace.detach().cpu().numpy(), 5)
-    xmax = np.percentile(laplace.detach().cpu().numpy(), 100 - 5)
+    xmin = np.percentile(laplace.detach().cpu().numpy(), 1)
+    xmax = np.percentile(laplace.detach().cpu().numpy(), 100 - 1)
     x = torch.clamp(laplace, xmin, xmax)
     if xmin == xmax:
         x = 0.5 * torch.ones_like(x) * (1.0 - 0.0) + 0.0
