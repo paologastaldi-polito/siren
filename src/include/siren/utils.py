@@ -10,9 +10,6 @@ import cv2
 import meta_modules
 import scipy.io.wavfile as wavfile
 import cmapy
-import cv2
-import math
-import matplotlib.colors as colors
 
 def cond_mkdir(path):
     if not os.path.exists(path):
