@@ -42,7 +42,7 @@ def laplace(y, x):
     grad = gradient(y, x)
     return divergence(grad, x)
 
-def cool_gradient(gradient)
+def cool_gradient(gradient):
     mG = gradient.detach().cpu()
     nRows = mG.shape[0]
     nCols = mG.shape[1]
