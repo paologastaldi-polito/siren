@@ -65,8 +65,8 @@ def cool_gradient(gradient):
     return torch.from_numpy(mGrgb)
 
 def cool_laplace(laplace):
-    xmin = np.percentile(laplace.detach().cpu().numpy(), 2)
-    xmax = np.percentile(laplace.detach().cpu().numpy(), 100 - 2)
+    xmin = np.percentile(laplace.detach().cpu().numpy(), 5)
+    xmax = np.percentile(laplace.detach().cpu().numpy(), 100 - 5)
     x = torch.clamp(laplace, xmin, xmax)
     if xmin == xmax:
         x = 0.5 * torch.ones_like(x) * (1.0 - 0.0) + 0.0
@@ -528,13 +528,13 @@ def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict
     a1.set_title('Ground truth', fontsize=textsize)
     # GT gradient
     a2 = fig.add_subplot(gs[1, 0])
-    a2.imshow(gt_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.imshow(cool_gradient(gt_dict['grads']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a2.set_xticks([])
     a2.set_yticks([])
     a2.text(5, 20, '$\it{▽f(x)}$', fontsize=textsize, color='w');
     # GT laplace
     a3 = fig.add_subplot(gs[2, 0])
-    a3.imshow(gt_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.imshow(cool_laplace(gt_dict['laplace']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a3.set_xticks([])
     a3.set_yticks([])
     a3.text(5, 20, '$\it{Δf(x)}$', fontsize=textsize);
@@ -546,12 +546,12 @@ def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict
     a1.set_title('ReLU on $\it{▽f(x)}$', fontsize=textsize)
     # grad(ReLU) gradient
     a2 = fig.add_subplot(gs[1, 1])
-    a2.imshow(relu_grad_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.imshow(cool_gradient(relu_grad_dict['grads']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a2.set_xticks([])
     a2.set_yticks([])
     # grad(ReLU) laplace
     a3 = fig.add_subplot(gs[2, 1])
-    a3.imshow(relu_grad_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.imshow(cool_laplace(relu_grad_dict['laplace']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a3.set_xticks([])
     a3.set_yticks([])
     # grad(SIREN)
@@ -562,12 +562,12 @@ def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict
     a1.set_title('SIREN on $\it{▽f(x)}$', fontsize=textsize)
     # grad(SIREN) gradient
     a2 = fig.add_subplot(gs[1, 2])
-    a2.imshow(siren_grad_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.imshow(cool_gradient(siren_grad_dict['grads']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a2.set_xticks([])
     a2.set_yticks([])
     # grad(SIREN) laplace
     a3 = fig.add_subplot(gs[2, 2])
-    a3.imshow(siren_grad_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.imshow(cool_laplace(siren_grad_dict['laplace']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a3.set_xticks([])
     a3.set_yticks([])
     # lapl(SIREN) image
@@ -578,12 +578,12 @@ def print_poisson_grid(gt_dict, relu_grad_dict, siren_grad_dict, siren_lapl_dict
     a1.set_title('SIREN on $\it{Δf(x)}$', fontsize=textsize)
     # lapl(SIREN) gradient
     a2 = fig.add_subplot(gs[1, 3])
-    a2.imshow(siren_lapl_dict['grads'].cpu().norm(dim=-1).view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a2.imshow(cool_gradient(siren_lapl_dict['grads']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a2.set_xticks([])
     a2.set_yticks([])
     # lapl(SIREN) laplace
     a3 = fig.add_subplot(gs[2, 3])
-    a3.imshow(siren_lapl_dict['laplace'].cpu().view(sidelength, sidelength).detach().numpy(), cmap='gray')
+    a3.imshow(cool_laplace(siren_lapl_dict['laplace']).cpu().view(sidelength, sidelength, 3).detach().numpy())
     a3.set_xticks([])
     a3.set_yticks([])
     # save and show the figure
