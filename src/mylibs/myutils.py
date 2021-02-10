@@ -56,8 +56,8 @@ def cool_gradient(gradient):
     mGhsv = np.zeros((nRows, nCols, 3), dtype=np.float32)
     mGhsv[:, :, 0] = (mGa + math.pi) / (2. * math.pi)
     mGhsv[:, :, 1] = 1.
-    nPerMin = np.percentile(mGm, 5)
-    nPerMax = np.percentile(mGm, 95)
+    nPerMin = np.percentile(mGm, 1)
+    nPerMax = np.percentile(mGm, 99)
     mGm = (mGm - nPerMin) / (nPerMax - nPerMin)
     mGm = np.clip(mGm, 0, 1)
     mGhsv[:, :, 2] = mGm
