@@ -56,8 +56,8 @@ def cool_gradient(gradient):
     mGhsv = np.zeros((nRows, nCols, 3), dtype=np.float32)
     mGhsv[:, :, 0] = (mGa + math.pi) / (2. * math.pi)
     mGhsv[:, :, 1] = 1.
-    nPerMin = np.percentile(mGm, 1)
-    nPerMax = np.percentile(mGm, 99)
+    nPerMin = np.percentile(mGm, 5)
+    nPerMax = np.percentile(mGm, 95)
     mGm = (mGm - nPerMin) / (nPerMax - nPerMin)
     mGm = np.clip(mGm, 0, 1)
     mGhsv[:, :, 2] = mGm
@@ -65,8 +65,8 @@ def cool_gradient(gradient):
     return torch.from_numpy(mGrgb)
 
 def cool_laplace(laplace):
-    xmin = np.percentile(laplace.detach().cpu().numpy(), 1)
-    xmax = np.percentile(laplace.detach().cpu().numpy(), 100 - 1)
+    xmin = np.percentile(laplace.detach().cpu().numpy(), 2)
+    xmax = np.percentile(laplace.detach().cpu().numpy(), 98)
     x = torch.clamp(laplace, xmin, xmax)
     if xmin == xmax:
         x = 0.5 * torch.ones_like(x) * (1.0 - 0.0) + 0.0
