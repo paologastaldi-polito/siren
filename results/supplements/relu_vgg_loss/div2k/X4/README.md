@@ -2,6 +2,29 @@
 
 ## Final results
 
+### Image 28
+
+```
+SISR 128x128 to 512x512
+hidden layers: 3
+hidden features: 256
+total steps: 1000
+
+
+PSNR:
+	ReLU: 15.923222
+	ReLU VGG: 14.627280
+	ReLU NeRF: 18.304235
+	ReLU NeRF VGG: 18.935867
+
+
+SSIM:
+	ReLU: 0.167729
+	ReLU VGG: 0.156297
+	ReLU NeRF: 0.309280
+	ReLU NeRF VGG: 0.411615
+```
+
 ### Image 143
 
 ```
