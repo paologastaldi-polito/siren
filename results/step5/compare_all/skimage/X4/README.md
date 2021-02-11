@@ -7,6 +7,7 @@
 SISR 128x128 to 512x512
 hidden layers: 3
 hidden features: 512
+total steps: 500
 
 PSNR:
 	SIREN: 26.646557

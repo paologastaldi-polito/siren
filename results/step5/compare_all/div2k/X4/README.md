@@ -8,6 +8,7 @@
 SISR 128x128 to 512x512
 hidden layers: 3
 hidden features: 512
+total steps: 500
 
 missing values...
 ```
@@ -16,6 +17,7 @@ missing values...
 SISR 128x128 to 512x512
 hidden layers: 2
 hidden features: 256
+total steps: 500
 
 PSNR:
 	SIREN: 19.660539
@@ -41,6 +43,7 @@ SSIM:
 SISR 128x128 to 512x512
 hidden layers: 3
 hidden features: 512
+total steps: 500
 
 PSNR:
 	SIREN: 24.589775
@@ -66,6 +69,7 @@ SSIM:
 SISR 128x128 to 512x512
 hidden layers: 2
 hidden features: 256
+total steps: 500
 
 PSNR:
 	SIREN: 24.447640
