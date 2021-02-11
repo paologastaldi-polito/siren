@@ -1,0 +1,26 @@
+# SISR X8
+
+## Final results
+
+### Image 143
+
+```
+SISR 64x64 to 512x512
+hidden layers: 3
+hidden features: 256
+total steps: 1000
+
+
+PSNR:
+	SIREN: 15.655175
+	SIREN VGG: 15.637607
+	SIREN NeRF: 15.526044
+	SIREN NeRF VGG: 15.370304
+
+
+SSIM:
+	SIREN: 0.315284
+	SIREN VGG: 0.316103
+	SIREN NeRF: 0.297122
+	SIREN NeRF VGG: 0.278101
+```
