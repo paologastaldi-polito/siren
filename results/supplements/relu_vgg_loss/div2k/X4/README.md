@@ -44,6 +44,46 @@ SSIM:
 	SIREN NeRF VGG: 0.398332
 ```
 
+### Image 109
+
+```
+SISR 128x128 to 512x512
+hidden layers: 3
+hidden features: 256
+total steps: 1000
+
+PSNR:
+	ReLU: 20.189587
+	ReLU VGG: 17.820047
+	ReLU NeRF: 24.159913
+	ReLU NeRF VGG: 25.588874
+
+SSIM:
+	ReLU: 0.542915
+	ReLU VGG: 0.554825
+	ReLU NeRF: 0.552074
+	ReLU NeRF VGG: 0.711031
+```
+
+```
+SISR 128x128 to 512x512
+hidden layers: 3
+hidden features: 256
+total steps: 1000
+
+PSNR:
+	SIREN: 27.503876
+	SIREN VGG: 27.512446
+	SIREN NeRF: 27.089030
+	SIREN NeRF VGG: 25.669409
+
+SSIM:
+	SIREN: 0.819574
+	SIREN VGG: 0.822281
+	SIREN NeRF: 0.775709
+	SIREN NeRF VGG: 0.716039
+```
+
 ### Image 143
 
 ```
