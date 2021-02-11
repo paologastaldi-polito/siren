@@ -2,7 +2,7 @@
 
 ## Final results
 
-### Image 143
+### Image cameraman
 
 ```
 SISR 128x128 to 512x512
