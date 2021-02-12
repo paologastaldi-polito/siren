@@ -18,9 +18,9 @@ Final project for the Machine Learning and Artificial Intelligence exam at Polit
 
 ## Report and code
 
-You can find our report [here](https://www.google.com).
+You can find our report [here]().
 
-All our code is in a Python Notebook format, you can explore it [here](https://www.google.com).
+All our code is in a Python Notebook format, you can explore it [here](https://github.com/paologastaldi-polito/siren/blob/master/src/explore_code.ipynb).
 
 ## Folder structure
 ```
