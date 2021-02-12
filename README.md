@@ -22,7 +22,7 @@ You can find our report [here]().
 
 All our code is in a Python Notebook format, you can explore it [here](https://colab.research.google.com/github/paologastaldi-polito/siren/blob/master/src/explore_code.ipynb).
 
-## Folder structure
+## Folders structure
 ```
 \siren
     \docs
