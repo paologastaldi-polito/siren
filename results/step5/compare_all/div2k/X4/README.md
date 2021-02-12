@@ -90,3 +90,30 @@ SSIM:
 	bicubic: 0.766432
 	SRGAN: 0.807511
 ```
+
+### Image 143
+
+```
+SISR 64x64 to 256x256
+hidden layers: 3
+hidden features: 256
+total steps: 500
+
+PSNR:
+	SIREN: 17.317041
+	SIREN VGG: 17.287477
+	SIREN Nerf: 17.093921
+	SIREN Nerf VGG: 17.131085
+	ReLU Nerf: 15.686979
+	bicubic: 17.651868
+	SRGAN: 17.497940
+
+SSIM:
+	SIREN: 0.496912
+	SIREN VGG: 0.495004
+	SIREN Nerf: 0.468841
+	SIREN Nerf VGG: 0.476329
+	ReLU Nerf: 0.309865
+	bicubic: 0.515414
+	SRGAN: 0.589693
+```
