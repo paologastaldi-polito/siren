@@ -1,0 +1,4 @@
+.DS_Store
+results/.DS_Store
+src/mylibs/psnr.py
+docs/.DS_Store
