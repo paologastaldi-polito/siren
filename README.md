@@ -1,18 +1,44 @@
 # MLAI project 2020-2021
 
+Final project for the Machine Learning and Artificial Intelligence exam at Politecnico di Torino about **Implicit Neural Representation with periodic activation functions (SIREN)**.
+
+## Contents
+- SIREN implementation
+- Image fitting and Poisson reconstruction
+- Comparison with ReLU
+- Ablation studies
+- SISR (single image super resolution)
+
 ## Team members
 
-- Abbamonte Matteo
-- Gastaldi Paolo
-- Gennero Stefano
-- Koudounas Alkis 
+- Abbamonte Matteo (_matteoabbamonte_)
+- Gastaldi Paolo (_paologastaldi-polito_)
+- Gennero Stefano (_Stevezbiz_)
+- Koudounas Alkis (_koudounasalkis_)
+
+## Report and code
+
+You can find our report [here](https://www.google.com).
+
+All our code is in a Python Notebook format, you can explore it [here](https://www.google.com).
+
+## Folder structure
+```
+\siren
+    \docs
+        \papers         # papers we referred to  
+        \delivery       # our final report, slides and other documents
+    \results            # images, graphs and data we obtained, grouped by experiment type
+    \src
+        \include
+            \siren      # content of the original repository we forked from
+        \mylibs         # code we exported from the Python Notebook
+        \srgan          # pretrained SRGAN values and our config for it
+    ...
+```
 
 ## Links
 
 | Description | Link |
 | ----------- | ---- |
-| Paper notes (Google docs) | https://docs.google.com/document/d/1HNO-WN0zaN473gWjPckAshZgb08GCQDHB4N5Peex2IM/edit |
-| Project report (LaTeX file on Overleaf) | https://www.overleaf.com/7676116376sphzztrghvxz |
 | Project slides (Google slides) | https://docs.google.com/presentation/d/1jzWI3-HSyIohnLq--r-r_w_ClB0sJUtho_iZWWW4wP8/edit?usp=sharing |
-| Code (Google colab) | https://colab.research.google.com/drive/1qaQLz2Famy1c0bGlN8u4IX6DTgr_JgOY?usp=sharing |
-| Structured Code (Google colab) | https://colab.research.google.com/drive/1T0Q36o_yv3wI7N-Ket0eoIU108rcT0k6?usp=sharing |
