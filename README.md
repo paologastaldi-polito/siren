@@ -18,7 +18,7 @@ Final project for the Machine Learning and Artificial Intelligence exam at Polit
 
 ## Report and code
 
-You can find our report [here]().
+You can find our report [here](https://github.com/paologastaldi-polito/siren/blob/master/docs/delivery/s278266_s277483_s277393_s270227_report_project1.pdf).
 
 All our code is in a Python Notebook format, you can explore it [here](https://colab.research.google.com/github/paologastaldi-polito/siren/blob/master/src/explore_code.ipynb).
 
