@@ -16,11 +16,13 @@ Final project for the Machine Learning and Artificial Intelligence exam at Polit
 - Gennero Stefano (_Stevezbiz_)
 - Koudounas Alkis (_koudounasalkis_)
 
-## Report and code
+## Report, slides and code 
 
 You can find our report [here](https://github.com/paologastaldi-polito/siren/blob/master/docs/delivery/s277483_s277393_s270227_s278266_report_project1.pdf).
 
-All our code is in a Python Notebook format, you can explore it [here](https://colab.research.google.com/github/paologastaldi-polito/siren/blob/master/src/explore_code.ipynb).
+Our presentation slides are [here](https://github.com/paologastaldi-polito/siren/blob/master/docs/delivery/s277483_s277393_s270227_s278266_slides_project1.pdf).
+
+All our code is in a Python Notebook format, you can explore it [here](https://github.com/paologastaldi-polito/siren/blob/master/src/explore_code.ipynb).
 
 ## Folders structure
 ```
