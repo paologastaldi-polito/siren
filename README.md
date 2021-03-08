@@ -38,9 +38,3 @@ All our code is in a Python Notebook format, you can explore it [here](https://g
         \srgan          # pretrained SRGAN values and our config for it
     ...
 ```
-
-## Links
-
-| Description | Link |
-| ----------- | ---- |
-| Project slides (Google slides) | https://docs.google.com/presentation/d/1jzWI3-HSyIohnLq--r-r_w_ClB0sJUtho_iZWWW4wP8/edit?usp=sharing |
